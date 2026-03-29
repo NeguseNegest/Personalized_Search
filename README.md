@@ -1,16 +1,44 @@
-# Personalised_Search
+# Personalised Search
 
-## SETUP:
-Start by running the following in the terminal to set up elastic search and kibana. Make sure to have docker installed and opened: 
+##  Setup
 
-´´´curl -fsSL https://elastic.co/start-local | sh´´´
+Follow these steps to set up Elasticsearch and Kibana locally.
 
-Export the password, url and api_key  and connect to the index.
+### 1. Prerequisites
 
-´´´cd elastic-start-local
+Make sure you have **Docker installed and running**.
+
+### 2. Start Elasticsearch & Kibana
+
+Run the following command in your terminal:
+
+```bash
+curl -fsSL https://elastic.co/start-local | sh
+```
+
+### 3. Configure Environment Variables
+
+Navigate to the generated folder and load environment variables:
+
+```bash
+cd elastic-start-local
 source .env
+```
+
+Export the required variables:
+
+```bash
 export ES_LOCAL_URL
 export ES_LOCAL_API_KEY
-export ES_LOCAL_PASSWORD´´´
+export ES_LOCAL_PASSWORD
+```
 
-Run connect.py and see that everything works.
+### 4. Verify Connection
+
+Run the following script to ensure everything is working:
+
+```bash
+python connect.py
+```
+
+If no errors occur, setup is complete
