@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Personalized Search Baseline</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 1100px; margin: 2rem auto; padding: 0 1rem; }
+    h1 { margin-bottom: 0.2rem; }
+    .muted { color: #555; }
+    form { display: grid; gap: 0.75rem; margin: 1.5rem 0; }
+    input[type="text"] { padding: 0.7rem; font-size: 1rem; }
+    .row { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+    .btn { padding: 0.7rem 1rem; font-size: 1rem; cursor: pointer; }
+    .card { border: 1px solid #ddd; border-radius: 8px; padding: 1rem; margin: 1rem 0; }
+    .grid { display: grid; grid-template-columns: 2fr 1fr; gap: 1rem; }
+    .result-title { font-size: 1.1rem; font-weight: bold; }
+    .small { font-size: 0.92rem; color: #444; }
+    ul { margin-top: 0.4rem; }
+    .error { color: #900; background: #fee; padding: 0.8rem; border-radius: 8px; }
+    @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <h1>Personalized Search Baseline</h1>
+  <p class="muted">Tiny BM25 + user-profile re-ranking demo for understanding the project pipeline.</p>
+
+  <form method="get">
+    <input type="text" name="q" placeholder="Try: python elasticsearch, football news, travel tips" value="{{ query }}">
+    <div class="row">
+      <label>User ID:
+        <input type="text" name="user_id" value="{{ user_id }}">
+      </label>
+      <label>
+        <input type="checkbox" name="personalized" value="1" {% if personalized %}checked{% endif %}>
+        Personalize results
+      </label>
+      <button class="btn" type="submit">Search</button>
+    </div>
+  </form>
+
+  {% if error %}
+    <div class="error">{{ error }}</div>
+  {% endif %}
+
+  <div class="grid">
+    <div>
+      {% for result in results %}
+        <div class="card">
+          <div class="result-title"><a href="{{ result.url }}" target="_blank" rel="noreferrer">{{ result.title }}</a></div>
+          <div class="small">Domain: {{ result.domain }} | Topics: {{ result.topics | join(', ') }}</div>
+          <p>{{ result.content }}</p>
+          <div class="small">
+            ES score: {{ result.es_score }}
+            {% if personalized %}
+              | Term bonus: {{ result.term_bonus }}
+              | Domain bonus: {{ result.domain_bonus }}
+            {% endif %}
+            | Final score: {{ result.final_score }}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div>
+      <div class="card">
+        <strong>How this works</strong>
+        <ul>
+          <li>Elasticsearch finds keyword-matching documents.</li>
+          <li>The app builds a user profile from past queries and clicked domains.</li>
+          <li>Results are boosted if they match the user profile.</li>
+        </ul>
+      </div>
+
+      {% if profile %}
+        <div class="card">
+          <strong>User profile</strong>
+          <p class="small">Interactions: {{ profile.num_interactions }}</p>
+          <p><strong>Top terms</strong></p>
+          <ul>
+            {% for term, weight in profile.top_terms %}
+              <li>{{ term }} ({{ '%.2f'|format(weight) }})</li>
+            {% endfor %}
+          </ul>
+          <p><strong>Top clicked domains</strong></p>
+          <ul>
+            {% for domain, weight in profile.top_domains %}
+              <li>{{ domain }} ({{ '%.2f'|format(weight) }})</li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</body>
+</html>
+
+
+
+CHATGPT_baseline_suggestion
