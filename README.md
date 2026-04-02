@@ -35,7 +35,11 @@ export ES_LOCAL_PASSWORD
 
 ### 4. Verify Connection
 
-Run the following script to ensure everything is working:
+Go to the project folder 
+```bash
+cd ProjectFolder
+```
+and run the following script to ensure everything is working:
 
 ```bash
 python connect.py
