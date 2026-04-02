@@ -47,7 +47,7 @@ The dataset concists of ≈17k books with meta data (title,author,publish data) 
 
 Run the indexer.py file to index the documents, should take less than <15s
 ```bash
-run indexer.py
+python indexer.py
 ```
 
 TODO -
