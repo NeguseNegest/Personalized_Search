@@ -2,17 +2,13 @@ import json
 from elasticsearch import Elasticsearch, helpers
 from tqdm import tqdm
 from config import ES_PASSWORD, ES_URL, ES_USERNAME
+from connect import connector
 
 INDEX_NAME = "booksummaries"
-FILE_PATH = "ProjectFolder/booksummaries/booksummaries.txt"
+FILE_PATH = "ProjectFolder/Corpus/booksummaries.txt"
 
-connector = Elasticsearch(
-    ES_URL,
-    basic_auth=(ES_USERNAME, ES_PASSWORD),
-    request_timeout=30
-)
 
-mapping = {
+mapping = { 
     "mappings": {
         "properties": {
             "wikipedia_id": {"type": "keyword"},
@@ -103,7 +99,7 @@ if __name__ == "__main__":
     success, errors = helpers.bulk(
         connector,
         generate_actions(FILE_PATH),
-        chunk_size=500
+        chunk_size=500 # number of documents sent to elasticsearch in each buld request 
     )
 
     print(f"Indexing complete. Indexed {success} documents.")
@@ -116,7 +112,7 @@ response = connector.search(
             "fields": ["title^3", "summary", "author^2", "genres"]
         }
     },
-    size=5
+    size=10
 )
 
 for hit in response["hits"]["hits"]:

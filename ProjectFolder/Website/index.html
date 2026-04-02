@@ -427,7 +427,7 @@
             class="search-input"
             type="text"
             name="q"
-            placeholder="Try: python elasticsearch, football news, travel tips"
+            placeholder="Try: horror, comedy, Anna, John"
             value="{{ query }}"
             autocomplete="off"
           >
@@ -482,32 +482,27 @@
             {% for result in results %}
               <article class="card result-card">
                 <div class="result-top">
-                  <h3 class="result-title">
-                    <a href="{{ result.url }}" target="_blank" rel="noreferrer noopener">
-                      {{ result.title }}
-                    </a>
-                  </h3>
+                  <h3 class="result-title">{{ result.title }}</h3>
                   <div class="meta">
-                    <strong>Domain:</strong> {{ result.domain }}
+                    <strong>Author:</strong> {{ result.author }}
+                    {% if result.publication_date %}
+                      · <strong>Published:</strong> {{ result.publication_date }}
+                    {% endif %}
                   </div>
                 </div>
 
-                {% if result.topics %}
-                  <div class="chip-row" aria-label="Topics">
-                    {% for topic in result.topics %}
-                      <span class="chip">{{ topic }}</span>
+                {% if result.genres %}
+                  <div class="chip-row" aria-label="Genres">
+                    {% for genre in result.genres %}
+                      <span class="chip">{{ genre }}</span>
                     {% endfor %}
                   </div>
                 {% endif %}
 
-                <p class="result-content">{{ result.content }}</p>
+                <p class="result-content">{{ result.summary }}</p>
 
                 <div class="score-row">
                   <span><strong>ES score:</strong> {{ result.es_score }}</span>
-                  {% if personalized %}
-                    <span><strong>Term bonus:</strong> {{ result.term_bonus }}</span>
-                    <span><strong>Domain bonus:</strong> {{ result.domain_bonus }}</span>
-                  {% endif %}
                   <span><strong>Final score:</strong> {{ result.final_score }}</span>
                 </div>
               </article>

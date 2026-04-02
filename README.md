@@ -50,5 +50,11 @@ Run the indexer.py file to index the documents, should take less than <15s
 python indexer.py
 ```
 
-TODO -
+Run the application:
 
+```bash
+flask --app app run --debug
+``` 
+Or run it using the run button in the editor.
+
+Go to http://127.0.0.1:5000 and search !
