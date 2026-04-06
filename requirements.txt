@@ -1,8 +1,9 @@
 requests
 elasticsearch
-sqlite3
 pandas
 numpy
 matplotlib
 urllib3
 flask
+tqdm
+python-dotenv

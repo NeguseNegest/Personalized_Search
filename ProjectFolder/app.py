@@ -16,7 +16,8 @@ def home():
 
     if query:
         try:
-            results = search_books(query=query, size=10)
+            #results = search_books(query=query, size=10)
+            results = search_books(query=query, size=10, user_id=user_id)
         except Exception as e:
             error = str(e)
 
