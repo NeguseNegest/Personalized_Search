@@ -482,7 +482,17 @@
             {% for result in results %}
               <article class="card result-card">
                 <div class="result-top">
-                  <h3 class="result-title">{{ result.title }}</h3>
+                  <!-- <h3 class="result-title">{{ result.title }}</h3> -->
+                  <h3 class="result-title">
+                    <a class="result-link"
+                       href="/book/{{ result.id }}"
+                       data-doc-id="{{ result.id }}"
+                       data-title="{{ result.title }}"
+                       data-author="{{ result.author }}"
+                       data-genres='{{ result.genres | tojson }}'>
+                      {{ result.title }}
+                    </a>
+                  </h3>
                   <div class="meta">
                     <strong>Author:</strong> {{ result.author }}
                     {% if result.publication_date %}
@@ -557,5 +567,32 @@
       </aside>
     </main>
   </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      document.querySelectorAll(".result-link").forEach(link => {
+        link.addEventListener("click", function () {
+          console.log("CLICKED:", this.dataset); // debug
+    
+          const payload = {
+            user_id: "{{ user_id }}",
+            query:   "{{ query }}",
+            doc_id:  this.dataset.docId,
+            title:   this.dataset.title,
+            author:  this.dataset.author,
+            genres:  JSON.parse(this.dataset.genres || "[]")
+          };
+    
+          fetch("/log", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(payload),
+            keepalive: true
+          })
+          .then(res => console.log("LOG SENT", res.status))
+          .catch(err => console.error("LOG ERROR", err));
+        });
+      });
+    });
+    </script>
 </body>
 </html>
