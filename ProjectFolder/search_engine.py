@@ -1,111 +1,27 @@
 from __future__ import annotations
+import math
+
 from es_client import connector
-from es_mappings import BOOKS_INDEX, PROFILES_INDEX, VECTOR_DIM
+from es_mappings import BOOKS_INDEX
+from user_logs import get_user_profile
+from embeddings_utils import (
+    encode_text,
+    weighted_average_vectors,
+    cosine_similarity,
+)
 
 INDEX_NAME = BOOKS_INDEX
 
-ALPHA = 1.0   # BM25 weight
-BETA = 5.0    # semantic-vector weight
-GAMMA = 3.0   # genre-preference weight
+RETRIEVE_K = 50
 
-
-
-def _get_user_profile(user_id: str) -> dict | None:
-    if not user_id:
-        return None
-    try:
-        resp = connector.get(index=PROFILES_INDEX, id=user_id)
-        return resp["_source"]
-    except Exception:
-        return None
-
-
-def _get_user_profile_from_logs(user_id: str) -> dict | None:
-    if not user_id:
-        return None
-    try:
-        resp = connector.search(
-            index="user_logs",
-            query={"term": {"user_id": user_id}},
-            size=0,
-            aggs={
-                "top_genres": {
-                    "terms": {"field": "genres", "size": 20}
-                }
-            },
-        )
-        buckets = resp["aggregations"]["top_genres"]["buckets"]
-        if not buckets:
-            return None
-        preferred = [b["key"] for b in buckets]
-        return {
-            "preferred_genres": preferred,
-            "interest_vector": [0.0] * VECTOR_DIM,
-        }
-    except Exception:
-        return None
-
-
-def _build_personalized_query(
-    query_str: str,
-    interest_vector: list[float],
-    preferred_genres: list[str],
-    size: int,
-) -> dict:
-    script_source = """
-        // --- BM25 component (α · _score) ---
-        double bm25 = params.alpha * _score;
-
-        // --- Semantic similarity component ---
-        double vecSim = 0.0;
-        if (doc['doc_vector'].size() > 0) {
-            // cosineSimilarity returns [-1, 1]; +1 shifts to [0, 2]
-            vecSim = params.beta * (1.0 + cosineSimilarity(params.qvec, 'doc_vector'));
-        }
-
-        // --- Genre overlap component ---
-        double genreBonus = 0.0;
-        if (params.pgenres.length > 0) {
-            int overlap = 0;
-            for (String g : doc['genres.keyword']) {
-                if (params.pgenres.contains(g)) {
-                    overlap++;
-                }
-            }
-            genreBonus = params.gamma * ((double) overlap / params.pgenres.length);
-        }
-
-        return bm25 + vecSim + genreBonus;
-    """
-
-    return {
-        "size": size,
-        "query": {
-            "script_score": {
-                "query": {
-                    "multi_match": {
-                        "query": query_str,
-                        "fields": ["title^3", "author^2", "summary", "genres"],
-                        "type": "best_fields",
-                    }
-                },
-                "script": {
-                    "source": script_source,
-                    "params": {
-                        "alpha": ALPHA,
-                        "beta": BETA,
-                        "gamma": GAMMA,
-                        "qvec": interest_vector,
-                        "pgenres": preferred_genres,
-                    },
-                },
-            }
-        },
-    }
+GENRE_WEIGHT = 2.0
+AUTHOR_WEIGHT = 1.5
+CLICK_WEIGHT = 2.5
+QUERY_VECTOR_WEIGHT = 1.5
+USER_VECTOR_WEIGHT = 2.0
 
 
 def _build_baseline_query(query_str: str, size: int) -> dict:
-    """Plain BM25 multi_match — used for anonymous users."""
     return {
         "size": size,
         "query": {
@@ -118,67 +34,156 @@ def _build_baseline_query(query_str: str, size: int) -> dict:
     }
 
 
+def _normalize_counts(counts: dict[str, int]) -> dict[str, float]:
+    total = sum(counts.values())
+    if total == 0:
+        return {}
+    return {key: value / total for key, value in counts.items()}
 
-def search_books(query: str, size: int = 10, user_id: str = "") -> list[dict]:
-    # load user profile
-    profile = _get_user_profile(user_id)
-    if profile is None:
-        profile = _get_user_profile_from_logs(user_id)
 
-    personalized = False
-    if profile is not None:
-        interest_vector = profile.get("interest_vector", [0.0] * VECTOR_DIM)
-        preferred_genres = profile.get("preferred_genres", [])
+def _truncate_summary(summary: str, max_len: int = 500) -> str:
+    if not summary:
+        return ""
+    if len(summary) <= max_len:
+        return summary
+    return summary[:max_len] + "..."
 
-        has_vector = any(v != 0.0 for v in interest_vector)
-        if has_vector or preferred_genres:
-            personalized = True
 
-    # run the appropriate query
-    if personalized:
-        body = _build_personalized_query(
-            query_str=query,
-            interest_vector=interest_vector,
-            preferred_genres=preferred_genres,
-            size=size,
-        )
-    else:
-        body = _build_baseline_query(query_str=query, size=size)
+def _format_baseline_hit(hit: dict) -> dict:
+    src = hit["_source"]
+    es_score = float(hit["_score"] or 0.0)
 
-    response = connector.search(index=INDEX_NAME, body=body)
+    return {
+        "id": hit["_id"],
+        "title": src.get("title", "Untitled"),
+        "author": src.get("author", "Unknown"),
+        "publication_date": src.get("publication_date"),
+        "genres": src.get("genres", []),
+        "summary": _truncate_summary(src.get("summary", "")),
+        "es_score": round(es_score, 3),
+        "final_score": round(es_score, 3),
+        "genre_bonus": 0.0,
+        "author_bonus": 0.0,
+        "click_bonus": 0.0,
+        "query_semantic_bonus": 0.0,
+        "user_semantic_bonus": 0.0,
+    }
 
-    # format results
-    results = []
-    for hit in response["hits"]["hits"]:
+
+def _get_user_vector(profile: dict) -> list[float]:
+    clicked_doc_ids = profile.get("clicked_doc_ids", {})
+    if not clicked_doc_ids:
+        return []
+
+    doc_ids = list(clicked_doc_ids.keys())[:20]
+    resp = connector.mget(index=BOOKS_INDEX, ids=doc_ids)
+
+    vectors = []
+    weights = []
+
+    for doc in resp["docs"]:
+        if not doc.get("found"):
+            continue
+
+        src = doc.get("_source", {})
+        vec = src.get("doc_vector", [])
+        if not vec:
+            continue
+
+        doc_id = doc["_id"]
+        click_count = clicked_doc_ids.get(doc_id, 0)
+
+        if click_count > 0:
+            vectors.append(vec)
+            weights.append(float(click_count))
+
+    return weighted_average_vectors(vectors, weights)
+
+
+def _rerank_hits(hits: list[dict], profile: dict, query: str) -> list[dict]:
+    genre_pref = _normalize_counts(profile.get("genre_counts", {}))
+    author_pref = _normalize_counts(profile.get("author_counts", {}))
+    clicked_doc_ids = profile.get("clicked_doc_ids", {})
+
+    query_vector = encode_text(query)
+    user_vector = _get_user_vector(profile)
+
+    reranked = []
+
+    for hit in hits:
         src = hit["_source"]
-        summary = src.get("summary", "")
-        if len(summary) > 500:
-            summary = summary[:500] + "..."
+        doc_id = hit["_id"]
+        bm25 = float(hit["_score"] or 0.0)
 
-        term_bonus = 0.0
-        domain_bonus = 0.0
-        if personalized and preferred_genres:
-            book_genres = set(src.get("genres", []))
-            overlap = len(book_genres & set(preferred_genres))
-            if overlap > 0:
-                domain_bonus = round(
-                    GAMMA * overlap / len(preferred_genres), 3
-                )
+        book_genres = src.get("genres", []) or []
+        book_author = src.get("author", "") or ""
+        doc_vector = src.get("doc_vector", []) or []
 
-        results.append({
-            "id": hit["_id"],
+        raw_genre_bonus = sum(genre_pref.get(genre, 0.0) for genre in book_genres)
+        raw_author_bonus = author_pref.get(book_author, 0.0)
+        raw_click_bonus = math.log1p(clicked_doc_ids.get(doc_id, 0))
+
+        genre_bonus = GENRE_WEIGHT * raw_genre_bonus
+        author_bonus = AUTHOR_WEIGHT * raw_author_bonus
+        click_bonus = CLICK_WEIGHT * raw_click_bonus
+
+        query_semantic_bonus = QUERY_VECTOR_WEIGHT * max(0.0, cosine_similarity(query_vector, doc_vector))
+        user_semantic_bonus = USER_VECTOR_WEIGHT * max(0.0, cosine_similarity(user_vector, doc_vector))
+
+        final_score = (
+            bm25
+            + genre_bonus
+            + author_bonus
+            + click_bonus
+            + query_semantic_bonus
+            + user_semantic_bonus
+        )
+
+        reranked.append({
+            "id": doc_id,
             "title": src.get("title", "Untitled"),
-            "author": src.get("author", "Unknown"),
+            "author": book_author or "Unknown",
             "publication_date": src.get("publication_date"),
-            "genres": src.get("genres", []),
-            "summary": summary,
-            "es_score": round(hit["_score"], 3),
-            "final_score": round(hit["_score"], 3),
-            "term_bonus": term_bonus,
-            "domain_bonus": domain_bonus,
+            "genres": book_genres,
+            "summary": _truncate_summary(src.get("summary", "")),
+            "es_score": round(bm25, 3),
+            "final_score": round(final_score, 3),
+            "genre_bonus": round(genre_bonus, 3),
+            "author_bonus": round(author_bonus, 3),
+            "click_bonus": round(click_bonus, 3),
+            "query_semantic_bonus": round(query_semantic_bonus, 3),
+            "user_semantic_bonus": round(user_semantic_bonus, 3),
         })
 
-    return results
+    reranked.sort(key=lambda doc: doc["final_score"], reverse=True)
+    return reranked
+
+
+def search_books(query: str, size: int = 10, user_id: str = "") -> list[dict]:
+    personalized = bool(user_id)
+
+    retrieve_size = RETRIEVE_K if personalized else size
+    body = _build_baseline_query(query_str=query, size=retrieve_size)
+
+    response = connector.search(index=INDEX_NAME, body=body)
+    hits = response["hits"]["hits"]
+
+    if not personalized:
+        return [_format_baseline_hit(hit) for hit in hits[:size]]
+
+    profile = get_user_profile(user_id)
+
+    has_profile_signal = (
+        bool(profile.get("clicked_doc_ids"))
+        or bool(profile.get("genre_counts"))
+        or bool(profile.get("author_counts"))
+    )
+
+    if not has_profile_signal:
+        return [_format_baseline_hit(hit) for hit in hits[:size]]
+
+    reranked = _rerank_hits(hits, profile, query)
+    return reranked[:size]
 
 
 personalized_search = search_books

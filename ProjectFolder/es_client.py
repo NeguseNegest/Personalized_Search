@@ -39,7 +39,7 @@ def _test_connection(client: Elasticsearch) -> None:
             f"cluster '{info['cluster_name']}'"
         )
     except Exception as exc:
-        print(f"[es_client] ❌ Cannot reach Elasticsearch at {ES_URL}: {exc}")
+        print(f"[es_client] Cannot reach Elasticsearch at {ES_URL}: {exc}")
         sys.exit(1)
 
 connector: Elasticsearch = _build_client()

@@ -485,7 +485,7 @@
                   <!-- <h3 class="result-title">{{ result.title }}</h3> -->
                   <h3 class="result-title">
                     <a class="result-link"
-                       href="/book/{{ result.id }}"
+                       href="#"
                        data-doc-id="{{ result.id }}"
                        data-title="{{ result.title }}"
                        data-author="{{ result.author }}"
@@ -512,9 +512,17 @@
                 <p class="result-content">{{ result.summary }}</p>
 
                 <div class="score-row">
-                  <span><strong>ES score:</strong> {{ result.es_score }}</span>
-                  <span><strong>Final score:</strong> {{ result.final_score }}</span>
-                </div>
+                    <span><strong>ES score:</strong> {{ result.es_score }}</span>
+                    <span><strong>Final score:</strong> {{ result.final_score }}</span>
+
+                    {% if personalized %}
+                      <span><strong>Genre bonus:</strong> {{ result.genre_bonus }}</span>
+                      <span><strong>Author bonus:</strong> {{ result.author_bonus }}</span>
+                      <span><strong>Click bonus:</strong> {{ result.click_bonus }}</span>
+                      <span><strong>Query semantic:</strong> {{ result.query_semantic_bonus }}</span>
+                      <span><strong>User semantic:</strong> {{ result.user_semantic_bonus }}</span>
+                    {% endif %}
+                  </div>
               </article>
             {% endfor %}
           {% else %}
@@ -532,67 +540,82 @@
         <section class="card">
           <h3>How this works</h3>
           <ul>
-            <li>Elasticsearch retrieves keyword-matching documents.</li>
-            <li>The app builds a user profile from past queries and clicked domains.</li>
-            <li>Matching terms and domains receive a personalization boost.</li>
+              <li>Elasticsearch retrieves keyword-matching books using BM25.</li>
+              <li>The app builds a user profile from past clicks, genres, and authors.</li>
+              <li>Books that match the user’s interests receive a personalization boost.</li>
           </ul>
         </section>
 
         {% if profile %}
-          <section class="card">
-            <h3>User profile</h3>
-            <p class="meta">Interactions: <strong>{{ profile.num_interactions }}</strong></p>
+  <section class="card">
+    <h3>User profile</h3>
+    <p class="meta">Interactions: <strong>{{ profile.num_interactions }}</strong></p>
 
-            <span class="section-label">Top terms</span>
-            <ul class="profile-list">
-              {% for term, weight in profile.top_terms %}
-                <li class="profile-item">
-                  <span>{{ term }}</span>
-                  <span>{{ '%.2f'|format(weight) }}</span>
-                </li>
-              {% endfor %}
-            </ul>
+    <span class="section-label">Top genres</span>
+    <ul class="profile-list">
+      {% for genre, count in profile.top_genres %}
+        <li class="profile-item">
+          <span>{{ genre }}</span>
+          <span>{{ count }}</span>
+        </li>
+      {% endfor %}
+    </ul>
 
-            <span class="section-label">Top clicked domains</span>
-            <ul class="profile-list">
-              {% for domain, weight in profile.top_domains %}
-                <li class="profile-item">
-                  <span>{{ domain }}</span>
-                  <span>{{ '%.2f'|format(weight) }}</span>
-                </li>
-              {% endfor %}
-            </ul>
-          </section>
-        {% endif %}
+    <span class="section-label">Top authors</span>
+    <ul class="profile-list">
+      {% for author, count in profile.top_authors %}
+        <li class="profile-item">
+          <span>{{ author }}</span>
+          <span>{{ count }}</span>
+        </li>
+      {% endfor %}
+    </ul>
+
+      {% if profile.recent_queries %}
+        <span class="section-label">Recent queries</span>
+        <ul class="profile-list">
+          {% for q in profile.recent_queries %}
+            <li class="profile-item">
+              <span>{{ q }}</span>
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </section>
+  {% endif %}
       </aside>
     </main>
   </div>
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      document.querySelectorAll(".result-link").forEach(link => {
-        link.addEventListener("click", function () {
-          console.log("CLICKED:", this.dataset); // debug
-    
-          const payload = {
-            user_id: "{{ user_id }}",
-            query:   "{{ query }}",
-            doc_id:  this.dataset.docId,
-            title:   this.dataset.title,
-            author:  this.dataset.author,
-            genres:  JSON.parse(this.dataset.genres || "[]")
-          };
-    
-          fetch("/log", {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify(payload),
-            keepalive: true
-          })
-          .then(res => console.log("LOG SENT", res.status))
-          .catch(err => console.error("LOG ERROR", err));
-        });
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".result-link").forEach(link => {
+      link.addEventListener("click", function () {
+        if (!"{{ user_id }}") {
+          return;
+        }
+
+        const payload = {
+          user_id: "{{ user_id }}",
+          query: "{{ query }}",
+          doc_id: this.dataset.docId,
+          title: this.dataset.title,
+          author: this.dataset.author,
+          genres: JSON.parse(this.dataset.genres || "[]")
+        };
+
+        fetch("/log", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify(payload),
+          keepalive: true
+        })
+        .then(res => console.log("LOG SENT", res.status))
+        .catch(err => console.error("LOG ERROR", err));
       });
     });
-    </script>
+  });
+</script>
 </body>
 </html>
+
+
