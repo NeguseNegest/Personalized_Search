@@ -91,13 +91,13 @@ def _build_personalized_query(
         // Only compute cosine similarity if the user actually has a
         // real interest vector (skip if all-zeros to avoid NaN).
         double vecSim = 0.0;
-        if (params.has_vec && doc['doc_vector'].size() > 0) {
+        if (params.has_vec && doc.containsKey('doc_vector') && doc['doc_vector'].size() > 0) {
             vecSim = params.beta * (1.0 + cosineSimilarity(params.qvec, 'doc_vector'));
         }
 
         // ── Genre overlap component ─────────────────────────────────
         double genreBonus = 0.0;
-        if (params.pgenres.length > 0) {
+        if (params.pgenres.length > 0 && doc.containsKey('genres.keyword') && doc['genres.keyword'].size() > 0) {
             int overlap = 0;
             for (String g : doc['genres.keyword']) {
                 if (params.pgenres.contains(g)) {
@@ -106,7 +106,7 @@ def _build_personalized_query(
             }
             genreBonus = params.gamma * ((double) overlap / params.pgenres.length);
         }
-
+        
         return bm25 + vecSim + genreBonus;
     """
 
