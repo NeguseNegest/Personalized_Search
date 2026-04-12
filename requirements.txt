@@ -7,3 +7,4 @@ urllib3
 flask
 tqdm
 python-dotenv
+sentence-transformers
