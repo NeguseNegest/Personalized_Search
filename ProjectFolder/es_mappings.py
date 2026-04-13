@@ -7,9 +7,9 @@ BOOKS_SETTINGS = {
     "settings": {
         "number_of_shards": 1,
         "number_of_replicas": 0,
+        "index.mapping.exclude_source_vectors": False,
         "analysis": {
             "analyzer": {
-
                 "english_custom": {
                     "type": "custom",
                     "tokenizer": "standard",
@@ -57,7 +57,6 @@ BOOKS_SETTINGS = {
                 "type": "text",
                 "analyzer": "english_custom",
             },
-            # Dense vector for semantic (cosine) similarity search
             "doc_vector": {
                 "type": "dense_vector",
                 "dims": VECTOR_DIM,

@@ -18,15 +18,15 @@ ES_API_KEY = os.getenv("ES_LOCAL_API_KEY", "")
 
 def _build_client() -> Elasticsearch:
     if ES_API_KEY:
-        client = Elasticsearch(ES_URL, api_key=ES_API_KEY, request_timeout=30)
+        client = Elasticsearch(ES_URL, api_key=ES_API_KEY, request_timeout=120)
     elif ES_PASSWORD:
         client = Elasticsearch(
             ES_URL,
             basic_auth=(ES_USERNAME, ES_PASSWORD),
-            request_timeout=30,
+            request_timeout=120,
         )
     else:
-        client = Elasticsearch(ES_URL, request_timeout=30)
+        client = Elasticsearch(ES_URL, request_timeout=120)
     return client
 
 

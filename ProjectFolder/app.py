@@ -43,7 +43,7 @@ def home():
 
     results = []
     error = None
-    profile = build_profile_view(user_id) if user_id else None
+    profile = build_profile_view(user_id) if (user_id and personalized) else None
 
     effective_user_id = user_id if personalized else ""
 
@@ -62,7 +62,6 @@ def home():
         profile=profile,
         error=error
     )
-
 
 @app.route("/log", methods=["POST"])
 def log():

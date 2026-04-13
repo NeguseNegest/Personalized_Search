@@ -105,7 +105,9 @@ def _rerank_hits(hits: list[dict], profile: dict, query: str) -> list[dict]:
     author_pref = _normalize_counts(profile.get("author_counts", {}))
     clicked_doc_ids = profile.get("clicked_doc_ids", {})
 
-    query_vector = encode_text(query)
+    use_query_semantics = len(query.split()) >= 3
+    query_vector = encode_text(query) if use_query_semantics else []
+
     user_vector = _get_user_vector(profile)
 
     reranked = []
@@ -172,15 +174,13 @@ def search_books(query: str, size: int = 10, user_id: str = "") -> list[dict]:
         return [_format_baseline_hit(hit) for hit in hits[:size]]
 
     profile = get_user_profile(user_id)
-
-    has_profile_signal = (
-        bool(profile.get("clicked_doc_ids"))
-        or bool(profile.get("genre_counts"))
-        or bool(profile.get("author_counts"))
-    )
-
-    if not has_profile_signal:
-        return [_format_baseline_hit(hit) for hit in hits[:size]]
+    if profile is None:
+        profile = {
+            "clicked_doc_ids": {},
+            "genre_counts": {},
+            "author_counts": {},
+            "recent_queries": [],
+        }
 
     reranked = _rerank_hits(hits, profile, query)
     return reranked[:size]
