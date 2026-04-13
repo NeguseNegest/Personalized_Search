@@ -18,6 +18,7 @@
       --primary: #2563eb;
       --primary-hover: #1d4ed8;
       --success: #065f46;
+      --success-bg: #ecfdf5;
       --danger: #991b1b;
       --danger-bg: #fef2f2;
       --shadow: 0 10px 30px rgba(17, 24, 39, 0.08);
@@ -38,6 +39,7 @@
       --primary: #60a5fa;
       --primary-hover: #3b82f6;
       --success: #34d399;
+      --success-bg: rgba(6, 95, 70, 0.22);
       --danger: #fca5a5;
       --danger-bg: rgba(127, 29, 29, 0.35);
       --shadow: 0 14px 34px rgba(0, 0, 0, 0.38);
@@ -129,7 +131,8 @@
       transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
     }
 
-    .search-form {
+    .search-form,
+    .profile-form {
       display: grid;
       gap: 14px;
     }
@@ -146,7 +149,9 @@
     }
 
     .search-input,
-    .text-input {
+    .text-input,
+    .textarea-input,
+    .select-input {
       width: 100%;
       border: 1px solid var(--border);
       border-radius: 12px;
@@ -157,20 +162,30 @@
       transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.25s ease, color 0.25s ease;
     }
 
+    .textarea-input {
+      min-height: 96px;
+      resize: vertical;
+    }
+
     .search-input::placeholder,
-    .text-input::placeholder {
+    .text-input::placeholder,
+    .textarea-input::placeholder {
       color: var(--muted);
     }
 
     .search-input:focus,
-    .text-input:focus {
+    .text-input:focus,
+    .textarea-input:focus,
+    .select-input:focus {
       outline: none;
       border-color: var(--primary);
       box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
     }
 
     html[data-theme="dark"] .search-input:focus,
-    html[data-theme="dark"] .text-input:focus {
+    html[data-theme="dark"] .text-input:focus,
+    html[data-theme="dark"] .textarea-input:focus,
+    html[data-theme="dark"] .select-input:focus {
       box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.18);
     }
 
@@ -216,12 +231,11 @@
       font-weight: 500;
     }
 
-    .btn {
+    .btn,
+    .btn-secondary {
       appearance: none;
       border: 0;
       border-radius: 12px;
-      background: var(--primary);
-      color: #fff;
       padding: 14px 18px;
       font-size: 1rem;
       font-weight: 700;
@@ -230,17 +244,43 @@
       white-space: nowrap;
     }
 
+    .btn {
+      background: var(--primary);
+      color: #fff;
+    }
+
     .btn:hover {
       background: var(--primary-hover);
     }
 
-    .btn:active {
+    .btn-secondary {
+      background: var(--surface-alt);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--surface-soft);
+    }
+
+    .btn:active,
+    .btn-secondary:active {
       transform: translateY(1px);
     }
 
     html[data-theme="dark"] .btn {
       color: #0b1220;
       box-shadow: 0 8px 24px rgba(59, 130, 246, 0.25);
+    }
+
+    .success {
+      margin: 18px 0 0;
+      padding: 14px 16px;
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      border-radius: 12px;
+      background: var(--success-bg);
+      color: var(--success);
+      font-weight: 600;
     }
 
     .error {
@@ -411,27 +451,6 @@
       scrollbar-gutter: stable;
     }
 
-    .profile-card::-webkit-scrollbar {
-      width: 10px;
-    }
-
-    .profile-card::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    .profile-card::-webkit-scrollbar-thumb {
-      background: var(--border);
-      border-radius: 999px;
-      border: 2px solid transparent;
-      background-clip: padding-box;
-    }
-
-    .profile-card::-webkit-scrollbar-thumb:hover {
-      background: var(--muted);
-      border: 2px solid transparent;
-      background-clip: padding-box;
-    }
-
     .profile-list {
       list-style: none;
       margin: 0;
@@ -452,13 +471,14 @@
       transition: background 0.25s ease, border-color 0.25s ease;
     }
 
-    .profile-item span:last-child {
-      color: var(--muted);
-      font-variant-numeric: tabular-nums;
-    }
-
     .profile-item.single {
       justify-content: flex-start;
+    }
+
+    .profile-item.wrap {
+      display: grid;
+      gap: 6px;
+      justify-content: stretch;
     }
 
     .empty-state {
@@ -486,6 +506,30 @@
       transition: background 0.25s ease, border-color 0.25s ease, color 0.25s ease;
     }
 
+    .profile-prompt {
+      display: grid;
+      gap: 14px;
+      margin-top: 10px;
+      padding-top: 14px;
+      border-top: 1px dashed var(--border);
+    }
+
+    .profile-grid {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .helper-text {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
     @media (max-width: 960px) {
       .layout {
         grid-template-columns: 1fr;
@@ -498,6 +542,10 @@
       .profile-card {
         max-height: none;
         overflow: visible;
+      }
+
+      .profile-grid {
+        grid-template-columns: 1fr;
       }
     }
 
@@ -520,7 +568,8 @@
         align-items: stretch;
       }
 
-      .btn {
+      .btn,
+      .btn-secondary {
         width: 100%;
       }
 
@@ -546,8 +595,8 @@
       <div class="hero-copy">
         <h1>Personalized Search DD2477</h1>
         <p>
-          A  BM25 + user-profile re-ranking demo that shows how search results can be improved
-          using query history and clicked documents.
+          A BM25 + user-profile re-ranking demo that shows how search results can be improved
+          using query history, clicked documents, and optional explicit user preferences.
         </p>
       </div>
       <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle dark and light mode">
@@ -564,7 +613,7 @@
             class="search-input"
             type="text"
             name="q"
-            placeholder="Try: horror, comedy, Anna, John"
+            placeholder="Try: horror, comedy, dystopia, philosophy"
             value="{{ query }}"
             autocomplete="off"
           >
@@ -581,6 +630,7 @@
                 name="user_id"
                 value="{{ user_id }}"
                 placeholder="e.g. user_123"
+                autocomplete="off"
               >
             </div>
 
@@ -599,6 +649,86 @@
           <button class="btn" type="submit">Search</button>
         </div>
       </form>
+
+      <div id="profilePrompt" class="profile-prompt {% if not user_id %}hidden{% endif %}">
+        <div>
+          <h3>Optional profile information</h3>
+          <p class="helper-text">
+            Add preferences to improve cold-start personalization before enough click history has been collected.
+          </p>
+        </div>
+
+        <form method="post" action="/profile" class="profile-form">
+          <input type="hidden" name="user_id" id="profile_user_id" value="{{ user_id }}">
+          <input type="hidden" name="q" value="{{ query }}">
+          {% if personalized %}
+            <input type="hidden" name="personalized" value="1">
+          {% endif %}
+
+          <div class="profile-grid">
+            <div class="field-group">
+              <label class="label" for="favorite_genres">Favorite genres</label>
+              <textarea
+                id="favorite_genres"
+                name="favorite_genres"
+                class="textarea-input"
+                placeholder="Fantasy, Horror, Mystery"
+              >{% if profile %}{{ profile.favorite_genres | join(', ') }}{% endif %}</textarea>
+            </div>
+
+            <div class="field-group">
+              <label class="label" for="favorite_authors">Favorite authors</label>
+              <textarea
+                id="favorite_authors"
+                name="favorite_authors"
+                class="textarea-input"
+                placeholder="Ursula K. Le Guin, George Orwell"
+              >{% if profile %}{{ profile.favorite_authors | join(', ') }}{% endif %}</textarea>
+            </div>
+
+            <div class="field-group">
+              <label class="label" for="favorite_books">Books you liked</label>
+              <textarea
+                id="favorite_books"
+                name="favorite_books"
+                class="textarea-input"
+                placeholder="Dune, 1984, The Hobbit"
+              >{% if profile %}{{ profile.favorite_books | join(', ') }}{% endif %}</textarea>
+            </div>
+
+            <div class="field-group">
+              <label class="label" for="interests_text">Interests / hobbies</label>
+              <textarea
+                id="interests_text"
+                name="interests_text"
+                class="textarea-input"
+                placeholder="Psychology, history, chess, philosophy"
+              >{% if profile %}{{ profile.interests_text }}{% endif %}</textarea>
+            </div>
+          </div>
+
+          <div class="profile-grid">
+            <div class="field-group">
+              <label class="label" for="profile_mode">Save mode</label>
+              <select id="profile_mode" name="profile_mode" class="select-input">
+                <option value="merge" selected>Merge with existing profile</option>
+                <option value="overwrite">Overwrite saved profile</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="controls">
+            <div class="helper-text">
+              You can save this now and update it later. Click history will also keep refining the profile.
+            </div>
+            <button class="btn-secondary" type="submit">Save profile</button>
+          </div>
+        </form>
+      </div>
+
+      {% if profile_saved %}
+        <div class="success" role="status">Profile saved successfully.</div>
+      {% endif %}
 
       {% if error %}
         <div class="error" role="alert">{{ error }}</div>
@@ -647,17 +777,27 @@
 
                 <p class="result-content">{{ result.summary }}</p>
 
+                {% if result.full_summary and result.full_summary != result.summary %}
+                  <details>
+                    <summary>Show full plot summary</summary>
+                    <p class="result-content">{{ result.full_summary }}</p>
+                  </details>
+                {% endif %}
+
                 <div class="score-row">
                   <span><strong>ES score:</strong> {{ result.es_score }}</span>
                   <span><strong>Final score:</strong> {{ result.final_score }}</span>
 
-                  {% if personalized %}
-                    <span><strong>Genre bonus:</strong> {{ result.genre_bonus }}</span>
-                    <span><strong>Author bonus:</strong> {{ result.author_bonus }}</span>
-                    <span><strong>Click bonus:</strong> {{ result.click_bonus }}</span>
-                    <span><strong>Query semantic:</strong> {{ result.query_semantic_bonus }}</span>
-                    <span><strong>User semantic:</strong> {{ result.user_semantic_bonus }}</span>
-                  {% endif %}
+              {% if personalized %}
+              <span><strong>Genre bonus:</strong> {{ result.genre_bonus }}</span>
+              <span><strong>Author bonus:</strong> {{ result.author_bonus }}</span>
+              <span><strong>Book bonus:</strong> {{ result.book_bonus }}</span>
+              <span><strong>Click bonus:</strong> {{ result.click_bonus }}</span>
+              <span><strong>Query semantic:</strong> {{ result.query_semantic_bonus }}</span>
+              <span><strong>User semantic:</strong> {{ result.user_semantic_bonus }}</span>
+              <span><strong>Explicit share:</strong> {{ result.explicit_share }}</span>
+              <span><strong>Click share:</strong> {{ result.click_share }}</span>
+            {% endif %}
                 </div>
               </article>
             {% endfor %}
@@ -677,35 +817,81 @@
           <h3>How this works</h3>
           <ul>
             <li>Elasticsearch retrieves keyword-matching books using BM25.</li>
-            <li>The app builds a user profile from past clicks, genres, and authors.</li>
-            <li>Books that match the user’s interests receive a personalization boost.</li>
+            <li>The app stores an explicit user profile and also learns from click history.</li>
+            <li>Later, the ranking combines lexical and personalized signals.</li>
           </ul>
         </section>
 
         {% if profile %}
           <section class="card profile-card">
             <h3>User profile</h3>
-            <p class="meta">Interactions: <strong>{{ profile.num_interactions }}</strong></p>
+            <p class="meta">
+              <strong>{{ profile.user_id }}</strong>
+              · Clicks: <strong>{{ profile.num_clicks }}</strong>
+              {% if profile.explicit_profile_completed %}
+                · Explicit profile: <strong>saved</strong>
+              {% else %}
+                · Explicit profile: <strong>not saved yet</strong>
+              {% endif %}
+            </p>
 
-            <span class="section-label">Top genres</span>
-            <ul class="profile-list">
-              {% for genre, count in profile.top_genres %}
-                <li class="profile-item">
-                  <span>{{ genre }}</span>
-                  <span>{{ count }}</span>
-                </li>
-              {% endfor %}
-            </ul>
+            {% if profile.favorite_genres %}
+              <span class="section-label">Favorite genres</span>
+              <ul class="profile-list">
+                {% for genre in profile.favorite_genres %}
+                  <li class="profile-item single"><span>{{ genre }}</span></li>
+                {% endfor %}
+              </ul>
+            {% endif %}
 
-            <span class="section-label">Top authors</span>
-            <ul class="profile-list">
-              {% for author, count in profile.top_authors %}
-                <li class="profile-item">
-                  <span>{{ author }}</span>
-                  <span>{{ count }}</span>
-                </li>
-              {% endfor %}
-            </ul>
+            {% if profile.favorite_authors %}
+              <span class="section-label">Favorite authors</span>
+              <ul class="profile-list">
+                {% for author in profile.favorite_authors %}
+                  <li class="profile-item single"><span>{{ author }}</span></li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+
+            {% if profile.favorite_books %}
+              <span class="section-label">Books liked</span>
+              <ul class="profile-list">
+                {% for book in profile.favorite_books %}
+                  <li class="profile-item single"><span>{{ book }}</span></li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+
+            {% if profile.interests_text %}
+              <span class="section-label">Interests</span>
+              <ul class="profile-list">
+                <li class="profile-item wrap"><span>{{ profile.interests_text }}</span></li>
+              </ul>
+            {% endif %}
+
+            {% if profile.top_click_genres %}
+              <span class="section-label">Top clicked genres</span>
+              <ul class="profile-list">
+                {% for genre, count in profile.top_click_genres %}
+                  <li class="profile-item">
+                    <span>{{ genre }}</span>
+                    <span>{{ count }}</span>
+                  </li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+
+            {% if profile.top_click_authors %}
+              <span class="section-label">Top clicked authors</span>
+              <ul class="profile-list">
+                {% for author, count in profile.top_click_authors %}
+                  <li class="profile-item">
+                    <span>{{ author }}</span>
+                    <span>{{ count }}</span>
+                  </li>
+                {% endfor %}
+              </ul>
+            {% endif %}
 
             {% if profile.recent_queries %}
               <span class="section-label">Recent queries</span>
@@ -721,114 +907,133 @@
         {% endif %}
       </aside>
     </main>
-  </div><script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const root = document.documentElement;
-    const themeToggle = document.getElementById("themeToggle");
-    const storageKey = "theme-preference";
+  </div>
 
-    const userInput = document.getElementById("user_id");
-    const queryInput = document.getElementById("q");
-    const form = document.querySelector(".search-form");
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const root = document.documentElement;
+      const themeToggle = document.getElementById("themeToggle");
+      const storageKey = "theme-preference";
 
-    const pendingLogPromises = [];
-    let submittingAfterFlush = false;
+      const userInput = document.getElementById("user_id");
+      const queryInput = document.getElementById("q");
+      const form = document.querySelector(".search-form");
+      const profilePrompt = document.getElementById("profilePrompt");
+      const profileUserIdInput = document.getElementById("profile_user_id");
 
-    function getPreferredTheme() {
-      const savedTheme = localStorage.getItem(storageKey);
-      if (savedTheme === "light" || savedTheme === "dark") {
-        return savedTheme;
+      const pendingLogPromises = [];
+      let submittingAfterFlush = false;
+
+      function getPreferredTheme() {
+        const savedTheme = localStorage.getItem(storageKey);
+        if (savedTheme === "light" || savedTheme === "dark") {
+          return savedTheme;
+        }
+        return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
       }
-      return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-    }
 
-    function applyTheme(theme) {
-      root.setAttribute("data-theme", theme);
-      localStorage.setItem(storageKey, theme);
+      function applyTheme(theme) {
+        root.setAttribute("data-theme", theme);
+        localStorage.setItem(storageKey, theme);
+
+        if (themeToggle) {
+          themeToggle.textContent = theme === "dark" ? "☀️ Light mode" : "🌙 Dark mode";
+          themeToggle.setAttribute(
+            "aria-label",
+            theme === "dark" ? "Switch to light mode" : "Switch to dark mode"
+          );
+        }
+      }
+
+      function syncProfilePrompt() {
+        const userId = userInput?.value.trim() || "";
+
+        if (profilePrompt) {
+          profilePrompt.classList.toggle("hidden", !userId);
+        }
+
+        if (profileUserIdInput) {
+          profileUserIdInput.value = userId;
+        }
+      }
+
+      function logClick(payload) {
+        const p = fetch("/log", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+          keepalive: true
+        })
+        .then(async (res) => {
+          const text = await res.text().catch(() => "");
+          if (!res.ok) {
+            throw new Error(`Log failed: ${res.status} ${text}`);
+          }
+        })
+        .catch((err) => {
+          console.error("LOG ERROR", err, payload);
+        });
+
+        pendingLogPromises.push(p);
+        return p;
+      }
+
+      applyTheme(getPreferredTheme());
+      syncProfilePrompt();
 
       if (themeToggle) {
-        themeToggle.textContent = theme === "dark" ? "☀️ Light mode" : "🌙 Dark mode";
-        themeToggle.setAttribute(
-          "aria-label",
-          theme === "dark" ? "Switch to light mode" : "Switch to dark mode"
-        );
+        themeToggle.addEventListener("click", function () {
+          const currentTheme = root.getAttribute("data-theme") || "light";
+          applyTheme(currentTheme === "dark" ? "light" : "dark");
+        });
       }
-    }
 
-    function logClick(payload) {
-      const p = fetch("/log", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-        keepalive: true
-      })
-      .then(async (res) => {
-        const text = await res.text().catch(() => "");
-        console.log("LOG SENT", res.status, payload, text);
-        if (!res.ok) {
-          throw new Error(`Log failed: ${res.status} ${text}`);
-        }
-      })
-      .catch((err) => {
-        console.error("LOG ERROR", err, payload);
+      if (userInput) {
+        userInput.addEventListener("input", syncProfilePrompt);
+        userInput.addEventListener("change", syncProfilePrompt);
+      }
+
+      document.querySelectorAll(".result-link").forEach(link => {
+        link.addEventListener("click", function (event) {
+          event.preventDefault();
+
+          const userId = userInput?.value.trim();
+          const query = queryInput?.value.trim();
+
+          if (!userId || !query) {
+            return;
+          }
+
+          const payload = {
+            user_id: userId,
+            query: query,
+            doc_id: this.dataset.docId,
+            title: this.dataset.title,
+            author: this.dataset.author,
+            genres: JSON.parse(this.dataset.genres || "[]")
+          };
+
+          logClick(payload);
+        });
       });
 
-      pendingLogPromises.push(p);
-      return p;
-    }
+      if (form) {
+        form.addEventListener("submit", async function (event) {
+          if (submittingAfterFlush) {
+            return;
+          }
 
-    applyTheme(getPreferredTheme());
+          event.preventDefault();
 
-    if (themeToggle) {
-      themeToggle.addEventListener("click", function () {
-        const currentTheme = root.getAttribute("data-theme") || "light";
-        applyTheme(currentTheme === "dark" ? "light" : "dark");
-      });
-    }
+          if (pendingLogPromises.length > 0) {
+            await Promise.allSettled(pendingLogPromises.splice(0));
+          }
 
-    document.querySelectorAll(".result-link").forEach(link => {
-      link.addEventListener("click", function (event) {
-        event.preventDefault();
-
-        const userId = userInput?.value.trim();
-        const query = queryInput?.value.trim();
-
-        if (!userId || !query) {
-          console.log("Skipping log: missing user_id or query");
-          return;
-        }
-
-        const payload = {
-          user_id: userId,
-          query: query,
-          doc_id: this.dataset.docId,
-          title: this.dataset.title,
-          author: this.dataset.author,
-          genres: JSON.parse(this.dataset.genres || "[]")
-        };
-
-        logClick(payload);
-      });
+          submittingAfterFlush = true;
+          form.submit();
+        });
+      }
     });
-
-    if (form) {
-      form.addEventListener("submit", async function (event) {
-        if (submittingAfterFlush) {
-          return;
-        }
-
-        event.preventDefault();
-
-        if (pendingLogPromises.length > 0) {
-          console.log(`Waiting for ${pendingLogPromises.length} pending log(s) before search`);
-          await Promise.allSettled(pendingLogPromises.splice(0));
-        }
-
-        submittingAfterFlush = true;
-        form.submit();
-      });
-    }
-  });
-</script>
+  </script>
 </body>
 </html>
