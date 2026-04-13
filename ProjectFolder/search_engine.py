@@ -12,13 +12,13 @@ from embeddings_utils import (
 
 INDEX_NAME = BOOKS_INDEX
 
-RETRIEVE_K = 50
+RETRIEVE_K = 100
 
 GENRE_WEIGHT = 2.0
 AUTHOR_WEIGHT = 1.5
 CLICK_WEIGHT = 2.5
-QUERY_VECTOR_WEIGHT = 1.5
-USER_VECTOR_WEIGHT = 2.0
+QUERY_VECTOR_WEIGHT = 10
+USER_VECTOR_WEIGHT = 10.0
 
 
 def _build_baseline_query(query_str: str, size: int) -> dict:

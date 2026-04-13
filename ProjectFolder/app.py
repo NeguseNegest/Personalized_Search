@@ -49,7 +49,7 @@ def home():
 
     if query:
         try:
-            results = search_books(query=query, size=10, user_id=effective_user_id)
+            results = search_books(query=query, size=50, user_id=effective_user_id)
         except Exception as e:
             error = str(e)
 

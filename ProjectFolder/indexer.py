@@ -20,7 +20,7 @@ FILE_PATH = "ProjectFolder/Corpus/booksummaries.txt"
 
 EMBED_BATCH_SIZE = 32
 ES_BULK_CHUNK_SIZE = 200
-SUMMARY_CHAR_LIMIT = 200
+SUMMARY_CHAR_LIMIT = 700
 
 
 def parse_line(line: str) -> dict | None:

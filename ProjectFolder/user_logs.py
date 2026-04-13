@@ -1,4 +1,4 @@
-from connect import connector
+from es_client import connector
 from datetime import datetime, timezone
 
 LOGS_INDEX = "user_logs"
@@ -40,7 +40,8 @@ def log_click(user_id: str, query: str, doc_id: str,
             "author":    author,
             "genres":    genres or [],
             "timestamp": datetime.now(timezone.utc).isoformat()
-        }
+        },
+        refresh="wait_for"
     )
 
 def get_user_profile(user_id: str, max_clicks: int = 100) -> dict:
