@@ -282,6 +282,7 @@ def _rerank_hits(hits: list[dict], profile: dict, query: str) -> list[dict]:
             "publication_date": src.get("publication_date"),
             "genres": book_genres,
             "summary": _truncate_summary(src.get("summary", "")),
+            "full_summary": src.get("summary", ""),
             "es_score": round(bm25, 3),
             "final_score": round(final_score, 3),
             "genre_bonus": round(genre_bonus, 3),
