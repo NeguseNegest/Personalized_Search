@@ -28,6 +28,8 @@ REPEAT_CLICK_WEIGHT = 1.6
 QUERY_VECTOR_WEIGHT = 4.0
 USER_VECTOR_WEIGHT = 8.0
 
+# Control the maximum impact of the lexical baseline
+BM25_WEIGHT = 10.0
 
 def _build_baseline_query(query_str: str, size: int) -> dict:
     return {
@@ -129,6 +131,7 @@ def _format_baseline_hit(hit: dict) -> dict:
         "summary": _truncate_summary(src.get("summary", "")),
         "full_summary": src.get("summary", ""),
         "es_score": round(es_score, 3),
+        "normalized_bm25": round(es_score, 3),
         "final_score": round(es_score, 3),
         "genre_bonus": 0.0,
         "author_bonus": 0.0,
@@ -215,6 +218,13 @@ def _rerank_hits(hits: list[dict], profile: dict, query: str) -> list[dict]:
     query_vector = encode_text(query) if query.strip() else []
     combined_user_vector, explicit_share, click_share = _get_combined_user_vector(profile)
 
+    # Find the maximum BM25 score in the retrieved hits
+    max_bm25 = 1.0
+    if hits:
+        max_bm25 = max(float(hit.get("_score") or 0.0) for hit in hits)
+        if max_bm25 == 0.0:
+            max_bm25 = 1.0  # Prevent division by zero
+
     reranked = []
 
     for hit in hits:
@@ -226,7 +236,10 @@ def _rerank_hits(hits: list[dict], profile: dict, query: str) -> list[dict]:
         book_genres = src.get("genres", []) or []
         doc_vector = src.get("doc_vector", []) or []
 
-        bm25 = float(hit["_score"] or 0.0)
+        # bm25 = float(hit["_score"] or 0.0)
+        # Normalize the score to [0.0, 1.0], then scale it by BM25_WEIGHT
+        raw_bm25 = float(hit.get("_score") or 0.0)
+        normalized_bm25_score = (raw_bm25 / max_bm25) * BM25_WEIGHT
 
         normalized_doc_genres = [_normalize_text(g) for g in book_genres if _normalize_text(g)]
         normalized_author = _normalize_text(book_author)
@@ -266,7 +279,7 @@ def _rerank_hits(hits: list[dict], profile: dict, query: str) -> list[dict]:
         )
 
         final_score = (
-            bm25
+            normalized_bm25_score
             + genre_bonus
             + author_bonus
             + book_bonus
@@ -283,7 +296,8 @@ def _rerank_hits(hits: list[dict], profile: dict, query: str) -> list[dict]:
             "genres": book_genres,
             "summary": _truncate_summary(src.get("summary", "")),
             "full_summary": src.get("summary", ""),
-            "es_score": round(bm25, 3),
+            "es_score": round(raw_bm25, 3),
+            "normalized_bm25": round(normalized_bm25_score, 3),
             "final_score": round(final_score, 3),
             "genre_bonus": round(genre_bonus, 3),
             "author_bonus": round(author_bonus, 3),
