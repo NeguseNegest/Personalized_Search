@@ -1,0 +1,61 @@
+System,rank,doc_id,title,Relevance,Query_ID
+Baseline,1,10901695,Love Story,3,1
+Baseline,2,5359850,Emotional Chemistry,0,1
+Baseline,3,2895874,"Enemies, a Love Story",2,1
+Baseline,4,24989546,Rage: A Love Story,1,1
+Baseline,5,29470900,Changes: a Love Story,2,1
+Baseline,6,6829682,You Suck: A Love Story,1,1
+Baseline,7,19150782,Midnight: A Gangster Love Story,1,1
+Baseline,8,26009537,Bite Me: A Love Story,0,1
+Baseline,9,30821476,Super Sad True Love Story,2,1
+Baseline,10,4884979,Ali and Nino: A Love Story,2,1
+No clicks,1,10901695,Love Story,3,1
+No clicks,2,2895874,"Enemies, a Love Story",2,1
+No clicks,3,30821476,Super Sad True Love Story,2,1
+No clicks,4,4884979,Ali and Nino: A Love Story,2,1
+No clicks,5,6829682,You Suck: A Love Story,1,1
+No clicks,6,19150782,Midnight: A Gangster Love Story,1,1
+No clicks,7,29470900,Changes: a Love Story,2,1
+No clicks,8,5359850,Emotional Chemistry,0,1
+No clicks,9,24989546,Rage: A Love Story,1,1
+No clicks,10,26009537,Bite Me: A Love Story,0,1
+After clicks,1,10901695,Love Story,3,1
+After clicks,2,2895874,"Enemies, a Love Story",2,1
+After clicks,3,30821476,Super Sad True Love Story,2,1
+After clicks,4,5359850,Emotional Chemistry,0,1
+After clicks,5,24989546,Rage: A Love Story,1,1
+After clicks,6,19150782,Midnight: A Gangster Love Story,1,1
+After clicks,7,29470900,Changes: a Love Story,2,1
+After clicks,8,4884979,Ali and Nino: A Love Story,2,1
+After clicks,9,6829682,You Suck: A Love Story,1,1
+After clicks,10,10373615,Love Lessons,2,1
+Baseline,1,4913305,Second Chance,0,0
+Baseline,2,9758281,Second Chance,3,0
+Baseline,3,16839895,No Second Chance,0,0
+Baseline,4,2407323,Romance,0,0
+Baseline,5,6530708,Sporting Chance,0,0
+Baseline,6,11541759,Snowball's Chance,0,0
+Baseline,7,14917564,2nd Chance,0,0
+Baseline,8,16368948,Fat Chance,1,0
+Baseline,9,20116937,Fat Chance,1,0
+Baseline,10,29471298,Wild Romance,2,0
+No clicks,1,9758281,Second Chance,3,0
+No clicks,2,4913305,Second Chance,0,0
+No clicks,3,16839895,No Second Chance,0,0
+No clicks,4,9993483,Second Thoughts,1,0
+No clicks,5,4768772,Second Thoughts,1,0
+No clicks,6,2407323,Romance,0,0
+No clicks,7,4547309,Second Generation,0,0
+No clicks,8,16368948,Fat Chance,1,0
+No clicks,9,29471298,Wild Romance,2,0
+No clicks,10,11421712,Second Glance,1,0
+After clicks,1,9758281,Second Chance,3,0
+After clicks,2,4913305,Second Chance,0,0
+After clicks,3,16839895,No Second Chance,0,0
+After clicks,4,2407323,Romance,0,0
+After clicks,5,29471298,Wild Romance,2,0
+After clicks,6,9993483,Second Thoughts,1,0
+After clicks,7,4768772,Second Thoughts,1,0
+After clicks,8,23920142,Second Fiddle,2,0
+After clicks,9,11421712,Second Glance,1,0
+After clicks,10,30100917,Second Skin,1,0

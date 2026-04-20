@@ -49,7 +49,7 @@ If no errors occur, setup is complete
 
 The dataset concists of ≈17k books with meta data (title,author,publish data) and their plot summary https://www.cs.cmu.edu/~dbamman/booksummaries.html .
 
-Run the indexer.py file to index the documents, should take less than <15s
+Run the indexer.py file to index the documents, should take less than <10min
 ```bash
 python indexer.py
 ```

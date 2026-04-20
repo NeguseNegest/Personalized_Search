@@ -14,7 +14,7 @@ from embeddings_utils import (
 
 INDEX_NAME = BOOKS_INDEX
 
-RETRIEVE_K = 100
+RETRIEVE_K = 20
 
 EXPLICIT_GENRE_WEIGHT = 2.2
 CLICK_GENRE_WEIGHT = 2.8
@@ -30,6 +30,7 @@ USER_VECTOR_WEIGHT = 8.0
 
 # Control the maximum impact of the lexical baseline
 BM25_WEIGHT = 10.0
+
 
 def _build_baseline_query(query_str: str, size: int) -> dict:
     return {
@@ -68,20 +69,53 @@ def _tokenize_title(value: str) -> set[str]:
     return set(re.findall(r"[a-z0-9]+", normalized))
 
 
+def _normalize_pref_counts(counts: dict[str, int]) -> dict[str, float]:
+    """
+    Convert a raw count map into a preference distribution over normalized keys.
+
+    Example:
+      {"George Orwell": 2, "GEORGE ORWELL": 1}
+    becomes
+      {"george orwell": 1.0}
+    """
+    merged: dict[str, int] = {}
+
+    for raw_key, raw_value in (counts or {}).items():
+        key = _normalize_text(str(raw_key))
+        if not key:
+            continue
+
+        try:
+            value = int(raw_value or 0)
+        except (TypeError, ValueError):
+            continue
+
+        if value <= 0:
+            continue
+
+        merged[key] = merged.get(key, 0) + value
+
+    total = sum(merged.values())
+    if total <= 0:
+        return {}
+
+    return {key: value / total for key, value in merged.items()}
+
+
 def _profile_blend(num_clicks: int) -> tuple[float, float]:
     """
-    Explicit profile should dominate at cold start.
-    Click profile should dominate as evidence accumulates.
-
-    With this formula:
-      0 clicks  -> explicit=1.00, click=0.00
-      5 clicks  -> explicit=0.50, click=0.50
-      20 clicks -> explicit=0.20, click=0.80
+    Theoretical blend when BOTH explicit and click vectors exist.
     """
     num_clicks = max(0, int(num_clicks or 0))
     explicit_share = 5.0 / (num_clicks + 5.0)
     click_share = num_clicks / (num_clicks + 5.0)
     return explicit_share, click_share
+
+
+def _vector_exists(vec: list[float] | None) -> bool:
+    if not vec:
+        return False
+    return any(float(x) != 0.0 for x in vec)
 
 
 def _best_book_match_score(candidate_title: str, favorite_books: list[str]) -> float:
@@ -149,7 +183,23 @@ def _get_click_user_vector(profile: dict) -> list[float]:
     if not clicked_doc_ids:
         return []
 
-    doc_ids = list(clicked_doc_ids.keys())[:30]
+    # Use the most-clicked documents, not just the first inserted keys.
+    top_doc_items = sorted(
+        (
+            (doc_id, int(click_count or 0))
+            for doc_id, click_count in clicked_doc_ids.items()
+            if str(doc_id).strip()
+        ),
+        key=lambda x: x[1],
+        reverse=True,
+    )[:30]
+
+    click_lookup = {doc_id: click_count for doc_id, click_count in top_doc_items if click_count > 0}
+    doc_ids = list(click_lookup.keys())
+
+    if not doc_ids:
+        return []
+
     resp = connector.mget(index=BOOKS_INDEX, ids=doc_ids)
 
     vectors = []
@@ -161,11 +211,11 @@ def _get_click_user_vector(profile: dict) -> list[float]:
 
         src = doc.get("_source", {}) or {}
         vec = src.get("doc_vector", []) or []
-        if not vec:
+        if not _vector_exists(vec):
             continue
 
         doc_id = doc["_id"]
-        click_count = int(clicked_doc_ids.get(doc_id, 0) or 0)
+        click_count = click_lookup.get(doc_id, 0)
         if click_count <= 0:
             continue
 
@@ -176,54 +226,68 @@ def _get_click_user_vector(profile: dict) -> list[float]:
 
 
 def _get_combined_user_vector(profile: dict) -> tuple[list[float], float, float]:
+    """
+    Returns:
+      combined_user_vector,
+      actual_explicit_share_used,
+      actual_click_share_used
+    """
     explicit_vector = profile.get("explicit_profile_vector", []) or []
     click_vector = _get_click_user_vector(profile)
 
+    has_explicit = _vector_exists(explicit_vector)
+    has_click = _vector_exists(click_vector)
+
+    # No usable user vector at all
+    if not has_explicit and not has_click:
+        return [], 0.0, 0.0
+
+    # Explicit only
+    if has_explicit and not has_click:
+        return explicit_vector, 1.0, 0.0
+
+    # Click only
+    if has_click and not has_explicit:
+        return click_vector, 0.0, 1.0
+
+    # Both exist -> use adaptive blend
     num_clicks = int(profile.get("num_clicks", 0) or 0)
     explicit_share, click_share = _profile_blend(num_clicks)
 
-    vectors = []
-    weights = []
+    combined = weighted_average_vectors(
+        [explicit_vector, click_vector],
+        [explicit_share, click_share],
+    )
 
-    if explicit_vector:
-        vectors.append(explicit_vector)
-        weights.append(explicit_share)
-
-    if click_vector:
-        vectors.append(click_vector)
-        weights.append(click_share)
-
-    if not vectors:
-        return [], explicit_share, click_share
-
-    if len(vectors) == 1:
-        return vectors[0], explicit_share, click_share
-
-    return weighted_average_vectors(vectors, weights), explicit_share, click_share
+    return combined, explicit_share, click_share
 
 
 def _rerank_hits(hits: list[dict], profile: dict, query: str) -> list[dict]:
-    click_genre_pref = _normalize_counts(profile.get("click_genre_counts", {}) or {})
-    click_author_pref = _normalize_counts(profile.get("click_author_counts", {}) or {})
+    # Normalize click-derived preferences over canonical keys.
+    click_genre_pref = _normalize_pref_counts(profile.get("click_genre_counts", {}) or {})
+    click_author_pref = _normalize_pref_counts(profile.get("click_author_counts", {}) or {})
     clicked_doc_ids = profile.get("clicked_doc_ids", {}) or {}
 
     explicit_genres = {
-        _normalize_text(g) for g in (profile.get("favorite_genres", []) or []) if _normalize_text(g)
+        _normalize_text(g)
+        for g in (profile.get("favorite_genres", []) or [])
+        if _normalize_text(g)
     }
     explicit_authors = {
-        _normalize_text(a) for a in (profile.get("favorite_authors", []) or []) if _normalize_text(a)
+        _normalize_text(a)
+        for a in (profile.get("favorite_authors", []) or [])
+        if _normalize_text(a)
     }
     favorite_books = profile.get("favorite_books", []) or []
 
     query_vector = encode_text(query) if query.strip() else []
     combined_user_vector, explicit_share, click_share = _get_combined_user_vector(profile)
 
-    # Find the maximum BM25 score in the retrieved hits
     max_bm25 = 1.0
     if hits:
         max_bm25 = max(float(hit.get("_score") or 0.0) for hit in hits)
         if max_bm25 == 0.0:
-            max_bm25 = 1.0  # Prevent division by zero
+            max_bm25 = 1.0
 
     reranked = []
 
@@ -236,23 +300,25 @@ def _rerank_hits(hits: list[dict], profile: dict, query: str) -> list[dict]:
         book_genres = src.get("genres", []) or []
         doc_vector = src.get("doc_vector", []) or []
 
-        # bm25 = float(hit["_score"] or 0.0)
-        # Normalize the score to [0.0, 1.0], then scale it by BM25_WEIGHT
         raw_bm25 = float(hit.get("_score") or 0.0)
         normalized_bm25_score = (raw_bm25 / max_bm25) * BM25_WEIGHT
 
-        normalized_doc_genres = [_normalize_text(g) for g in book_genres if _normalize_text(g)]
+        normalized_doc_genres = {
+            _normalize_text(g) for g in book_genres if _normalize_text(g)
+        }
         normalized_author = _normalize_text(book_author)
 
         explicit_genre_matches = sum(
             1.0 for genre in normalized_doc_genres if genre in explicit_genres
         )
         click_genre_matches = sum(
-            float(click_genre_pref.get(genre, 0.0)) for genre in book_genres
+            float(click_genre_pref.get(genre, 0.0)) for genre in normalized_doc_genres
         )
 
-        explicit_author_match = 1.0 if normalized_author and normalized_author in explicit_authors else 0.0
-        click_author_match = float(click_author_pref.get(book_author, 0.0))
+        explicit_author_match = (
+            1.0 if normalized_author and normalized_author in explicit_authors else 0.0
+        )
+        click_author_match = float(click_author_pref.get(normalized_author, 0.0))
 
         book_match_score = _best_book_match_score(title, favorite_books)
         repeat_click_score = math.log1p(int(clicked_doc_ids.get(doc_id, 0) or 0))

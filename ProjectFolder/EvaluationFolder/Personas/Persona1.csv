@@ -1,0 +1,61 @@
+System,rank,doc_id,title,Relevance,Query_ID
+Baseline,1,3116541,High Society,0,1
+Baseline,2,23232654,Heist Society,0,1
+Baseline,3,31608317,High Society,0,1
+Baseline,4,158680,The Transparent Society,3,1
+Baseline,5,4976673,The Dragon Society,0,1
+Baseline,6,11715375,The Veiled Society,1,1
+Baseline,7,16982109,The Oblivion Society,1,1
+Baseline,8,27352990,The September Society,0,1
+Baseline,9,28080649,The Vice Society,0,1
+Baseline,10,2245815,The Pillars of Society,2,1
+No clicks,1,3116541,High Society,0,1
+No clicks,2,158680,The Transparent Society,3,1
+No clicks,3,23232654,Heist Society,0,1
+No clicks,4,27352990,The September Society,0,1
+No clicks,5,11715375,The Veiled Society,1,1
+No clicks,6,16982109,The Oblivion Society,1,1
+No clicks,7,31608317,High Society,0,1
+No clicks,8,28080649,The Vice Society,0,1
+No clicks,9,4976673,The Dragon Society,0,1
+No clicks,10,780603,The Open Society and Its Enemies,2,1
+After clicks,1,11715375,The Veiled Society,1,1
+After clicks,2,23232654,Heist Society,0,1
+After clicks,3,16982109,The Oblivion Society,0,1
+After clicks,4,31608317,High Society,1,1
+After clicks,5,3116541,High Society,0,1
+After clicks,6,27352990,The September Society,0,1
+After clicks,7,158680,The Transparent Society,3,1
+After clicks,8,28080649,The Vice Society,0,1
+After clicks,9,4976673,The Dragon Society,1,1
+After clicks,10,9884977,The Mysterious Benedict Society,1,1
+Baseline,1,9597831,Halting State,1,0
+Baseline,2,1257960,State of Fear,0,0
+Baseline,3,26533452,State of War,2,0
+Baseline,4,5197098,In a Free State,1,0
+Baseline,5,6896846,The Councillor of State,1,0
+Baseline,6,31229545,Empire State of Mind,0,0
+Baseline,7,68851,The State of the Art,1,0
+Baseline,8,1302957,The Sovereign State of ITT,2,0
+Baseline,9,25995519,The Chinese State in Ming Society,1,0
+Baseline,10,19951018,The Mass Psychology of Fascism,3,0
+No clicks,1,1257960,State of Fear,0,0
+No clicks,2,9597831,Halting State,1,0
+No clicks,3,31229545,Empire State of Mind,0,0
+No clicks,4,6896846,The Councillor of State,1,0
+No clicks,5,26533452,State of War,2,0
+No clicks,6,5197098,In a Free State,1,0
+No clicks,7,68851,The State of the Art,1,0
+No clicks,8,19951018,The Mass Psychology of Fascism,3,0
+No clicks,9,25995519,The Chinese State in Ming Society,1,0
+No clicks,10,1302957,The Sovereign State of ITT,2,0
+After clicks,1,1257960,State of Fear,0,0
+After clicks,2,9597831,Halting State,0,0
+After clicks,3,26533452,State of War,2,0
+After clicks,4,6896846,The Councillor of State,1,0
+After clicks,5,5197098,In a Free State,1,0
+After clicks,6,68851,The State of the Art,1,0
+After clicks,7,31229545,Empire State of Mind,0,0
+After clicks,8,25995519,The Chinese State in Ming Society,1,0
+After clicks,9,14932225,Half a Crown,3,0
+After clicks,10,1876173,Mario and the Magician,3,0

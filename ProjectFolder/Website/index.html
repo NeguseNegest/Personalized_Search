@@ -646,7 +646,17 @@
             </div>
           </div>
 
-          <button class="btn" type="submit">Search</button>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+  <button class="btn" type="submit">Search</button>
+
+  <a
+    class="btn-secondary"
+    href="{{ url_for('download_results', q=query, user_id=user_id, personalized='1' if personalized else None) }}"
+    style="display:inline-flex; align-items:center; justify-content:center; text-decoration:none;"
+  >
+    Download top 10
+  </a>
+</div>
         </div>
       </form>
 
@@ -795,8 +805,8 @@
               <span><strong>Click bonus:</strong> {{ result.click_bonus }}</span>
               <span><strong>Query semantic:</strong> {{ result.query_semantic_bonus }}</span>
               <span><strong>User semantic:</strong> {{ result.user_semantic_bonus }}</span>
-              <span><strong>Explicit share:</strong> {{ result.explicit_share }}</span>
-              <span><strong>Click share:</strong> {{ result.click_share }}</span>
+                <span><strong>Explicit weight used:</strong> {{ result.explicit_share }}</span>
+              <span><strong>Click weight used:</strong> {{ result.click_share }}</span>
             {% endif %}
                 </div>
               </article>

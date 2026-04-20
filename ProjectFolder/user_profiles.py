@@ -18,6 +18,17 @@ def _clean_text(value: str | None) -> str:
     return " ".join((value or "").strip().split())
 
 
+def _canonical_key(value: str | None) -> str:
+    """
+    Canonical form used for matching / merging logically identical strings.
+
+    Example:
+      " George Orwell " -> "george orwell"
+      "GEORGE  ORWELL"  -> "george orwell"
+    """
+    return _clean_text(value).casefold()
+
+
 def _clean_list(values: list[str] | tuple[str, ...] | None) -> list[str]:
     if not values:
         return []
@@ -42,6 +53,81 @@ def _clean_list(values: list[str] | tuple[str, ...] | None) -> list[str]:
 
 def _merge_lists(old_values: list[str], new_values: list[str]) -> list[str]:
     return _clean_list((old_values or []) + (new_values or []))
+
+
+def _normalize_count_map(counts: dict[str, Any] | None) -> dict[str, int]:
+    """
+    Merge legacy duplicate keys that differ only by case/spacing while keeping
+    a readable display key for the UI.
+
+    Example input:
+      {
+        "George Orwell": 2,
+        "GEORGE ORWELL": 1,
+        "George  Orwell": 3
+      }
+
+    Output:
+      {
+        "George Orwell": 6
+      }
+    """
+    if not counts:
+        return {}
+
+    display_key_by_canonical: dict[str, str] = {}
+    merged_counts: dict[str, int] = {}
+
+    for raw_key, raw_value in counts.items():
+        cleaned_key = _clean_text(str(raw_key))
+        canonical = _canonical_key(cleaned_key)
+
+        if not canonical:
+            continue
+
+        try:
+            value = int(raw_value or 0)
+        except (TypeError, ValueError):
+            continue
+
+        if value <= 0:
+            continue
+
+        if canonical not in display_key_by_canonical:
+            display_key_by_canonical[canonical] = cleaned_key
+            merged_counts[canonical] = 0
+
+        merged_counts[canonical] += value
+
+    return {
+        display_key_by_canonical[canonical]: merged_counts[canonical]
+        for canonical in display_key_by_canonical
+    }
+
+
+def _increment_normalized_count(counts: dict[str, int], raw_key: str) -> dict[str, int]:
+    """
+    Increment a count map while merging logically identical keys.
+
+    This fixes issues like:
+      "Science Fiction" vs "science fiction"
+      "George Orwell" vs "GEORGE ORWELL"
+    """
+    normalized = _normalize_count_map(counts)
+
+    cleaned_key = _clean_text(raw_key)
+    canonical = _canonical_key(cleaned_key)
+
+    if not canonical:
+        return normalized
+
+    for existing_key in list(normalized.keys()):
+        if _canonical_key(existing_key) == canonical:
+            normalized[existing_key] = int(normalized.get(existing_key, 0)) + 1
+            return normalized
+
+    normalized[cleaned_key] = 1
+    return normalized
 
 
 def build_explicit_profile_text(
@@ -82,7 +168,6 @@ def _default_profile(user_id: str) -> dict[str, Any]:
         "favorite_books": [],
         "interests_text": "",
         "explicit_profile_text": "",
-        "explicit_profile_vector": [],
         "clicked_doc_ids": {},
         "click_genre_counts": {},
         "click_author_counts": {},
@@ -108,6 +193,15 @@ def get_user_profile(user_id: str) -> dict[str, Any]:
         merged = _default_profile(user_id)
         merged.update(src)
         merged["user_id"] = user_id
+
+        # Normalize legacy maps on read so old stored data is still handled correctly.
+        merged["click_genre_counts"] = _normalize_count_map(
+            merged.get("click_genre_counts", {}) or {}
+        )
+        merged["click_author_counts"] = _normalize_count_map(
+            merged.get("click_author_counts", {}) or {}
+        )
+
         return merged
 
     return _default_profile(user_id)
@@ -160,7 +254,9 @@ def save_explicit_profile(
         interests_text=final_interests,
     )
 
-    explicit_profile_vector = encode_text(explicit_profile_text) if explicit_profile_text else []
+    explicit_profile_vector = (
+        encode_text(explicit_profile_text) if explicit_profile_text else None
+    )
 
     updated = {
         **profile,
@@ -170,10 +266,14 @@ def save_explicit_profile(
         "favorite_books": final_books,
         "interests_text": final_interests,
         "explicit_profile_text": explicit_profile_text,
-        "explicit_profile_vector": explicit_profile_vector,
         "explicit_profile_completed": bool(explicit_profile_text),
         "updated_at": _utc_now_iso(),
     }
+
+    if explicit_profile_vector is not None:
+        updated["explicit_profile_vector"] = explicit_profile_vector
+    else:
+        updated.pop("explicit_profile_vector", None)
 
     connector.index(
         index=PROFILES_INDEX,
@@ -211,17 +311,17 @@ def update_profile_from_click(
     profile = get_user_profile(user_id)
 
     clicked_doc_ids = dict(profile.get("clicked_doc_ids", {}) or {})
-    click_genre_counts = dict(profile.get("click_genre_counts", {}) or {})
-    click_author_counts = dict(profile.get("click_author_counts", {}) or {})
+    click_genre_counts = _normalize_count_map(profile.get("click_genre_counts", {}) or {})
+    click_author_counts = _normalize_count_map(profile.get("click_author_counts", {}) or {})
     recent_queries = list(profile.get("recent_queries", []) or [])
 
-    clicked_doc_ids[doc_id] = int(clicked_doc_ids.get(doc_id, 0)) + 1
+    clicked_doc_ids[doc_id] = int(clicked_doc_ids.get(doc_id, 0) or 0) + 1
 
     for genre in genres:
-        click_genre_counts[genre] = int(click_genre_counts.get(genre, 0)) + 1
+        click_genre_counts = _increment_normalized_count(click_genre_counts, genre)
 
     if author:
-        click_author_counts[author] = int(click_author_counts.get(author, 0)) + 1
+        click_author_counts = _increment_normalized_count(click_author_counts, author)
 
     recent_queries = [q for q in recent_queries if q.casefold() != query.casefold()]
     recent_queries.insert(0, query)
@@ -234,9 +334,13 @@ def update_profile_from_click(
         "click_genre_counts": click_genre_counts,
         "click_author_counts": click_author_counts,
         "recent_queries": recent_queries,
-        "num_clicks": int(profile.get("num_clicks", 0)) + 1,
+        "num_clicks": int(profile.get("num_clicks", 0) or 0) + 1,
         "updated_at": _utc_now_iso(),
     }
+
+    updated.pop("explicit_profile_vector", None)
+    if profile.get("explicit_profile_vector"):
+        updated["explicit_profile_vector"] = profile["explicit_profile_vector"]
 
     connector.index(
         index=PROFILES_INDEX,

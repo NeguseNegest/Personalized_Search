@@ -1,0 +1,61 @@
+System,rank,doc_id,title,Relevance,Query_ID
+Baseline,1,922791,Gods and Generals,0,1
+Baseline,2,817546,Ancient Shores,0,1
+Baseline,3,3124623,Seven Ancient Wonders,1,1
+Baseline,4,5752813,The Ancient Economy,0,1
+Baseline,5,973112,Demi-Gods and Semi-Devils,2,1
+Baseline,6,168676,Small Gods,3,1
+Baseline,7,182128,American Gods,3,1
+Baseline,8,1403779,Household Gods,2,1
+Baseline,9,24638632,Dead Gods,2,1
+Baseline,10,6961741,Hadon of Ancient Opar,1,1
+No clicks,1,182128,American Gods,3,1
+No clicks,2,24638632,Dead Gods,2,1
+No clicks,3,922791,Gods and Generals,0,1
+No clicks,4,1403779,Household Gods,2,1
+No clicks,5,7002018,Men Like Gods,1,1
+No clicks,6,168676,Small Gods,3,1
+No clicks,7,817546,Ancient Shores,0,1
+No clicks,8,973112,Demi-Gods and Semi-Devils,2,1
+No clicks,9,6961741,Hadon of Ancient Opar,1,1
+No clicks,10,5752813,The Ancient Economy,0,1
+After clicks,1,182128,American Gods,3,1
+After clicks,2,922791,Gods and Generals,0,1
+After clicks,3,1403779,Household Gods,2,1
+After clicks,4,168676,Small Gods,3,1
+After clicks,5,24638632,Dead Gods,2,1
+After clicks,6,817546,Ancient Shores,1,1
+After clicks,7,7002018,Men Like Gods,1,1
+After clicks,8,6961741,Hadon of Ancient Opar,2,1
+After clicks,9,301587,The Gods Themselves,1,1
+After clicks,10,5640249,Petty Pewter Gods,2,1
+Baseline,1,7213629,Magic,1,0
+Baseline,2,21104381,The Folklore of Discworld,3,0
+Baseline,3,871416,"Magic, Inc.",1,0
+Baseline,4,5160255,Wild Magic,3,0
+Baseline,5,5624476,Industrial Magic,1,0
+Baseline,6,6347846,Magic Moon,2,0
+Baseline,7,6800115,Street Magic,2,0
+Baseline,8,7029693,Magic Steps,2,0
+Baseline,9,10721367,Dark Magic,1,0
+Baseline,10,11701961,Magic Lessons,1,0
+No clicks,1,21104381,The Folklore of Discworld,3,0
+No clicks,2,7213629,Magic,1,0
+No clicks,3,13817412,Magic Mirror,2,0
+No clicks,4,25640132,Fog Magic,2,0
+No clicks,5,5160255,Wild Magic,3,0
+No clicks,6,24803643,Od Magic,2,0
+No clicks,7,31180983,Magic Seeds,0,0
+No clicks,8,871416,"Magic, Inc.",1,0
+No clicks,9,1117350,The Magic Finger,1,0
+No clicks,10,5624476,Industrial Magic,1,0
+After clicks,1,13817412,Magic Mirror,1,0
+After clicks,2,21104381,The Folklore of Discworld,3,0
+After clicks,3,5160255,Wild Magic,3,0
+After clicks,4,25640132,Fog Magic,2,0
+After clicks,5,7213629,Magic,0,0
+After clicks,6,7029693,Magic Steps,2,0
+After clicks,7,6800115,Street Magic,2,0
+After clicks,8,5624476,Industrial Magic,2,0
+After clicks,9,1117350,The Magic Finger,1,0
+After clicks,10,24803643,Od Magic,2,0

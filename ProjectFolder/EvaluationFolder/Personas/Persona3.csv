@@ -1,0 +1,61 @@
+System,rank,doc_id,title,Relevance,Query_ID
+Baseline,1,12101939,Descent into Hell,2,1
+Baseline,2,143836,A Descent into the Maelstrom,3,1
+Baseline,3,2554063,Descent into the Depths of the Earth,1,1
+Baseline,4,3061712,Direct Descent,0,1
+Baseline,5,4691204,The Descent,3,1
+Baseline,6,4227671,Moominsummer Madness,0,1
+Baseline,7,17166254,Murder Madness,2,1
+Baseline,8,22473684,Mascot Madness!,0,1
+Baseline,9,9876762,CHERUB: Divine Madness,1,1
+Baseline,10,2487031,The Descent of Anansi,0,1
+No clicks,1,12101939,Descent into Hell,2,1
+No clicks,2,143836,A Descent into the Maelstrom,3,1
+No clicks,3,17166254,Murder Madness,2,1
+No clicks,4,3061712,Direct Descent,0,1
+No clicks,5,4227671,Moominsummer Madness,0,1
+No clicks,6,2554063,Descent into the Depths of the Earth,1,1
+No clicks,7,25757841,Flight into Camden,0,1
+No clicks,8,4691204,The Descent,3,1
+No clicks,9,14491274,Into the Mist,1,1
+No clicks,10,22473684,Mascot Madness!,0,1
+After clicks,1,12101939,Descent into Hell,2,1
+After clicks,2,143836,A Descent into the Maelstrom,3,1
+After clicks,3,17166254,Murder Madness,2,1
+After clicks,4,3061712,Direct Descent,0,1
+After clicks,5,4227671,Moominsummer Madness,0,1
+After clicks,6,25757841,Flight into Camden,0,1
+After clicks,7,4691204,The Descent,3,1
+After clicks,8,4603131,Lady into Fox,2,1
+After clicks,9,2554063,Descent into the Depths of the Earth,1,1
+After clicks,10,9876762,CHERUB: Divine Madness,1,1
+Baseline,1,33580925,Children of Paranoia,2,0
+Baseline,2,1768189,Fear and Trembling,0,0
+Baseline,3,4672551,Fear,3,0
+Baseline,4,11664985,Fear,2,0
+Baseline,5,29930801,Fear,1,0
+Baseline,6,474327,Foundation's Fear,1,0
+Baseline,7,1728918,Mortal Fear,2,0
+Baseline,8,3603894,Mortal Fear,0,0
+Baseline,9,4923088,Fear Nothing,3,0
+Baseline,10,5282234,Fear Itself,1,0
+No clicks,1,33580925,Children of Paranoia,2,0
+No clicks,2,4672551,Fear,3,0
+No clicks,3,11664985,Fear,2,0
+No clicks,4,33141119,The Fear,1,0
+No clicks,5,4923088,Fear Nothing,3,0
+No clicks,6,5282234,Fear Itself,1,0
+No clicks,7,1768189,Fear and Trembling,0,0
+No clicks,8,5842145,Fear and Loathing in Las Vegas,1,0
+No clicks,9,1257960,State of Fear,1,0
+No clicks,10,1672133,Kingdom of Fear,1,0
+After clicks,1,33580925,Children of Paranoia,2,0
+After clicks,2,4672551,Fear,3,0
+After clicks,3,4923088,Fear Nothing,3,0
+After clicks,4,11664985,Fear,2,0
+After clicks,5,33141119,The Fear,1,0
+After clicks,6,1768189,Fear and Trembling,0,0
+After clicks,7,5842145,Fear and Loathing in Las Vegas,1,0
+After clicks,8,1672133,Kingdom of Fear,0,0
+After clicks,9,29930801,Fear,1,0
+After clicks,10,5282234,Fear Itself,1,0

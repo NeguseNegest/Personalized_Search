@@ -1,0 +1,61 @@
+System,rank,doc_id,title,Relevance,Query_ID
+Baseline,1,6851820,The Android,2,1
+Baseline,2,26215558,Double Identity,1,1
+Baseline,3,397398,The Bourne Identity,0,1
+Baseline,4,29879178,The Obama Identity,0,1
+Baseline,5,1505455,Tower of Glass,3,1
+Baseline,6,18651232,"Double, Double",2,1
+Baseline,7,22500310,Genesis,2,1
+Baseline,8,3098692,Immortal Coil,3,1
+Baseline,9,10411443,Mind Transfer,3,1
+Baseline,10,4359466,Comic Potential,2,1
+No clicks,1,6851820,The Android,2,1
+No clicks,2,397398,The Bourne Identity,0,1
+No clicks,3,26215558,Double Identity,1,1
+No clicks,4,29879178,The Obama Identity,0,1
+No clicks,5,10411443,Mind Transfer,3,1
+No clicks,6,22335323,Into the Slave Nebula,3,1
+No clicks,7,3098692,Immortal Coil,3,1
+No clicks,8,4359466,Comic Potential,2,1
+No clicks,9,8734771,Mockingbird,3,1
+No clicks,10,18651232,"Double, Double",2,1
+After clicks,1,6851820,The Android,2,1
+After clicks,2,397398,The Bourne Identity,0,1
+After clicks,3,26215558,Double Identity,1,1
+After clicks,4,29879178,The Obama Identity,0,1
+After clicks,5,10411443,Mind Transfer,3,1
+After clicks,6,1505455,Tower of Glass,3,1
+After clicks,7,18651232,"Double, Double",2,1
+After clicks,8,22335323,Into the Slave Nebula,3,1
+After clicks,9,1664760,Lucky Starr and the Moons of Jupiter,2,1
+After clicks,10,8734771,Mockingbird,3,1
+Baseline,1,2922874,Ethics,0,0
+Baseline,2,591767,Nicomachean Ethics,0,0
+Baseline,3,2391980,.hack//AI buster,3,0
+Baseline,4,4832311,Ai no Kusabi,0,0
+Baseline,5,3983954,.hack//AI buster 2,2,0
+Baseline,6,12577558,Master of the Books,0,0
+Baseline,7,74257,About a Boy,0,0
+Baseline,8,7887222,All About Sam,0,0
+Baseline,9,14012645,Not About Nightingales,0,0
+Baseline,10,21712242,All About Lulu,0,0
+No clicks,1,2922874,Ethics,0,0
+No clicks,2,591767,Nicomachean Ethics,0,0
+No clicks,3,4832311,Ai no Kusabi,1,0
+No clicks,4,2391980,.hack//AI buster,3,0
+No clicks,5,7410353,Books Do Furnish a Room,0,0
+No clicks,6,14977169,The City of Dreaming Books,0,0
+No clicks,7,12577558,Master of the Books,0,0
+No clicks,8,597618,Lanark: A Life in Four Books,1,0
+No clicks,9,3983954,.hack//AI buster 2,2,0
+No clicks,10,10561486,All About Love: New Visions,0,0
+After clicks,1,2922874,Ethics,0,0
+After clicks,2,591767,Nicomachean Ethics,0,0
+After clicks,3,4832311,Ai no Kusabi,1,0
+After clicks,4,2391980,.hack//AI buster,3,0
+After clicks,5,12577558,Master of the Books,0,0
+After clicks,6,3983954,.hack//AI buster 2,2,0
+After clicks,7,597618,Lanark: A Life in Four Books,1,0
+After clicks,8,14977169,The City of Dreaming Books,0,0
+After clicks,9,7887222,All About Sam,0,0
+After clicks,10,74257,About a Boy,0,0

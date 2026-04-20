@@ -1,6 +1,9 @@
 from __future__ import annotations
+import csv
+from io import StringIO, BytesIO
+from io import BytesIO
 
-from flask import Flask, render_template, request, jsonify, redirect, url_for
+from flask import Flask, render_template, request, jsonify, redirect, url_for, send_file
 
 from search_engine import search_books
 from user_logs import log_click
@@ -41,6 +44,12 @@ def _split_multivalue_field(value: str) -> list[str]:
             items.append(cleaned)
 
     return items
+
+
+def _safe_filename_part(value: str, fallback: str = "query") -> str:
+    cleaned = "".join(ch if ch.isalnum() or ch in ("-", "_") else "_" for ch in value.strip())
+    cleaned = "_".join(part for part in cleaned.split("_") if part)
+    return cleaned[:50] if cleaned else fallback
 
 
 def build_profile_view(user_id: str) -> dict | None:
@@ -184,6 +193,68 @@ def log():
     )
 
     return jsonify({"status": "ok"})
+
+
+@app.route("/download-results", methods=["GET"])
+def download_results():
+    query = request.args.get("q", "").strip()
+    user_id = request.args.get("user_id", "").strip()
+    personalized = request.args.get("personalized") == "1"
+
+    if not query:
+        return redirect(
+            url_for(
+                "home",
+                user_id=user_id,
+                personalized="1" if personalized else None,
+                error="Please enter a query before downloading results.",
+            )
+        )
+
+    effective_user_id = user_id if personalized else ""
+    system_name = "personalized" if personalized else "baseline"
+
+    try:
+        results = search_books(query=query, size=10, user_id=effective_user_id)
+    except Exception as e:
+        return redirect(
+            url_for(
+                "home",
+                q=query,
+                user_id=user_id,
+                personalized="1" if personalized else None,
+                error=str(e),
+            )
+        )
+
+    lines: list[str] = [
+        "Top 10 Search Results",
+        "=====================",
+        f"Query: {query}",
+        f"User ID: {user_id or 'N/A'}",
+        f"System: {system_name}",
+        "",
+        "rank\tdoc_id\ttitle",
+    ]
+
+    for rank, result in enumerate(results, start=1):
+        title = str(result.get("title", "Untitled")).replace("\t", " ").replace("\n", " ").strip()
+        doc_id = str(result.get("id", "")).replace("\t", " ").replace("\n", " ").strip()
+        lines.append(f"{rank}\t{doc_id}\t{title}")
+
+    content = "\n".join(lines)
+    file_bytes = BytesIO(content.encode("utf-8"))
+
+    filename_query = _safe_filename_part(query, fallback="query")
+    filename_user = _safe_filename_part(user_id, fallback="anonymous")
+    filename = f"{filename_user}_{system_name}_{filename_query}_top10.txt"
+
+    return send_file(
+        file_bytes,
+        as_attachment=True,
+        download_name=filename,
+        mimetype="text/plain; charset=utf-8",
+    )
 
 
 if __name__ == "__main__":

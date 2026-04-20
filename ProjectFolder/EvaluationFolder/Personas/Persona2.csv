@@ -1,0 +1,61 @@
+System,rank,doc_id,title,Relevance,Query_ID
+Baseline,1,817546,Ancient Shores,0,1
+Baseline,2,6931010,Romanov prophecy,1,1
+Baseline,3,12709242,The Prophecy,1,1
+Baseline,4,23936874,Bluestar's Prophecy,3,1
+Baseline,5,3124623,Seven Ancient Wonders,2,1
+Baseline,6,5752813,The Ancient Economy,0,1
+Baseline,7,717726,The Final Prophecy,1,1
+Baseline,8,1096847,The Celestine Prophecy,1,1
+Baseline,9,1266281,1975 in Prophecy!,0,1
+Baseline,10,14917027,The Quantum Prophecy,1,1
+No clicks,1,1096847,The Celestine Prophecy,1,1
+No clicks,2,6931010,Romanov prophecy,1,1
+No clicks,3,22097773,The Atlantis Prophecy,2,1
+No clicks,4,717726,The Final Prophecy,1,1
+No clicks,5,817546,Ancient Shores,0,1
+No clicks,6,6961741,Hadon of Ancient Opar,2,1
+No clicks,7,23936874,Bluestar's Prophecy,3,1
+No clicks,8,12709242,The Prophecy,1,1
+No clicks,9,14917027,The Quantum Prophecy,1,1
+No clicks,10,5752813,The Ancient Economy,0,1
+After clicks,1,23936874,Bluestar's Prophecy,3,1
+After clicks,2,6961741,Hadon of Ancient Opar,2,1
+After clicks,3,817546,Ancient Shores,0,1
+After clicks,4,1096847,The Celestine Prophecy,1,1
+After clicks,5,6931010,Romanov prophecy,1,1
+After clicks,6,12709242,The Prophecy,1,1
+After clicks,7,14917027,The Quantum Prophecy,1,1
+After clicks,8,717726,The Final Prophecy,1,1
+After clicks,9,16640940,Child of the Prophecy,3,1
+After clicks,10,22097773,The Atlantis Prophecy,2,1
+Baseline,1,27472888,The Fellowship of the Ring,3,0
+Baseline,2,467482,Against Interpretation,0,0
+Baseline,3,3603755,Prime Evil,2,0
+Baseline,4,4542093,"Evil, Inc.",0,0
+Baseline,5,5197331,Evil Star,2,0
+Baseline,6,14733785,Evil Genius,1,0
+Baseline,7,79131,Seven Against Thebes,1,0
+Baseline,8,2558043,Against the Giants,3,0
+Baseline,9,6053554,Against the Day,0,0
+Baseline,10,6531292,Against the Odds,0,0
+No clicks,1,25888393,Swords Against Death,3,0
+No clicks,2,27472888,The Fellowship of the Ring,3,0
+No clicks,3,2558043,Against the Giants,3,0
+No clicks,4,25888432,Swords Against Wizardry,3,0
+No clicks,5,6053554,Against the Day,0,0
+No clicks,6,467482,Against Interpretation,0,0
+No clicks,7,5197331,Evil Star,2,0
+No clicks,8,3603755,Prime Evil,2,0
+No clicks,9,14733785,Evil Genius,1,0
+No clicks,10,4542093,"Evil, Inc.",0,0
+After clicks,1,25888393,Swords Against Death,3,0
+After clicks,2,5197331,Evil Star,2,0
+After clicks,3,25888432,Swords Against Wizardry,3,0
+After clicks,4,14733785,Evil Genius,1,0
+After clicks,5,27472888,The Fellowship of the Ring,3,0
+After clicks,6,3603755,Prime Evil,2,0
+After clicks,7,6053554,Against the Day,0,0
+After clicks,8,2534874,The Evil Experiment,1,0
+After clicks,9,2558043,Against the Giants,3,0
+After clicks,10,4542093,"Evil, Inc.",0,0

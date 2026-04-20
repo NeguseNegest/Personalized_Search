@@ -101,3 +101,4 @@ def cosine_similarity(vec_a: list[float], vec_b: list[float]) -> float:
         return 0.0
 
     return float(np.dot(a, b) / (norm_a * norm_b))
+

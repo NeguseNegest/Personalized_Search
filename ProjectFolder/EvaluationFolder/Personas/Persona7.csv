@@ -1,0 +1,61 @@
+System,rank,doc_id,title,Relevance,Query_ID
+Baseline,1,487133,Hegemony or Survival,0,1
+Baseline,2,1172256,Snow Country,1,1
+Baseline,3,1753796,Another Country,1,1
+Baseline,4,4547131,Border Country,1,1
+Baseline,5,14764340,Judas Country,1,1
+Baseline,6,18550096,Cross Country,0,1
+Baseline,7,25689479,Spook Country,0,1
+Baseline,8,30584827,Sacred Country,1,1
+Baseline,9,9926491,The Rules of Survival,1,1
+Baseline,10,11578417,Survival Of The Fittest,0,1
+No clicks,1,487133,Hegemony or Survival,0,1
+No clicks,2,18550096,Cross Country,1,1
+No clicks,3,11578417,Survival Of The Fittest,0,1
+No clicks,4,30584827,Sacred Country,1,1
+No clicks,5,1172256,Snow Country,1,1
+No clicks,6,25689479,Spook Country,0,1
+No clicks,7,9926491,The Rules of Survival,1,1
+No clicks,8,1753796,Another Country,1,1
+No clicks,9,2798992,The Far Country,1,1
+No clicks,10,4547131,Border Country,1,1
+After clicks,1,487133,Hegemony or Survival,0,1
+After clicks,2,9926491,The Rules of Survival,1,1
+After clicks,3,11578417,Survival Of The Fittest,0,1
+After clicks,4,30584827,Sacred Country,1,1
+After clicks,5,18550096,Cross Country,1,1
+After clicks,6,25689479,Spook Country,0,1
+After clicks,7,2798992,The Far Country,1,1
+After clicks,8,1753796,Another Country,1,1
+After clicks,9,1172256,Snow Country,1,1
+After clicks,10,4547131,Border Country,1,1
+Baseline,1,4598712,Sacrifice,0,0
+Baseline,2,12342181,The Sacrifice,1,0
+Baseline,3,27518176,Last Sacrifice,0,0
+Baseline,4,36043883,Family,1,0
+Baseline,5,155311,War and Peace,2,0
+Baseline,6,1567266,War and Remembrance,3,0
+Baseline,7,5406188,Love and War,0,0
+Baseline,8,11259604,Love and War,0,0
+Baseline,9,241961,My Family and Other Animals,0,0
+Baseline,10,314793,Family Matters,1,0
+No clicks,1,4598712,Sacrifice,0,0
+No clicks,2,155311,War and Peace,2,0
+No clicks,3,1567266,War and Remembrance,3,0
+No clicks,4,27518176,Last Sacrifice,0,0
+No clicks,5,11259604,Love and War,0,0
+No clicks,6,12342181,The Sacrifice,1,0
+No clicks,7,3241257,His Family,1,0
+No clicks,8,3139231,Family Voices,0,0
+No clicks,9,241961,My Family and Other Animals,0,0
+No clicks,10,36043883,Family,1,0
+After clicks,1,4598712,Sacrifice,0,0
+After clicks,2,1567266,War and Remembrance,3,0
+After clicks,3,155311,War and Peace,2,0
+After clicks,4,27518176,Last Sacrifice,0,0
+After clicks,5,12342181,The Sacrifice,1,0
+After clicks,6,36043883,Family,1,0
+After clicks,7,3241257,His Family,1,0
+After clicks,8,3139231,Family Voices,0,0
+After clicks,9,11259604,Love and War,0,0
+After clicks,10,5227875,The Family Trade,0,0
