@@ -1,0 +1,61 @@
+System,rank,doc_id,title,Relevance,Query_ID
+Baseline,1,20510400,Blood and Memory,0,1
+Baseline,2,30777995,Memory,2,1
+Baseline,3,4923105,False Memory,2,1
+Baseline,4,12782889,Shakespeare's Memory,1,1
+Baseline,5,14710236,Trace Memory,0,1
+Baseline,6,18651008,Memory Prime,0,1
+Baseline,7,2961685,"Breath, Eyes, Memory",3,1
+Baseline,8,7411317,A Christmas Memory,1,1
+Baseline,9,13877613,Memory in Death,2,1
+Baseline,10,14074160,The Memory Game,2,1
+No clicks,1,20510400,Blood and Memory,0,1
+No clicks,2,12782889,Shakespeare's Memory,1,1
+No clicks,3,30777995,Memory,2,1
+No clicks,4,14074160,The Memory Game,2,1
+No clicks,5,2961685,"Breath, Eyes, Memory",3,1
+No clicks,6,4923105,False Memory,2,1
+No clicks,7,18651008,Memory Prime,0,1
+No clicks,8,25563271,The Memory Cathedral,1,1
+No clicks,9,19604029,The Longest Memory,3,1
+No clicks,10,30620075,Escape from Memory,1,1
+After clicks,1,20510400,Blood and Memory,0,1
+After clicks,2,4923105,False Memory,2,1
+After clicks,3,30777995,Memory,2,1
+After clicks,4,12782889,Shakespeare's Memory,1,1
+After clicks,5,14074160,The Memory Game,2,1
+After clicks,6,19604029,The Longest Memory,3,1
+After clicks,7,2961685,"Breath, Eyes, Memory",3,1
+After clicks,8,7911644,The Memory Keeper's Daughter,3,1
+After clicks,9,7411317,A Christmas Memory,1,1
+After clicks,10,30620075,Escape from Memory,1,1
+Baseline,1,3979527,Redemption,1,2
+Baseline,2,2771999,Betrayal,1,2
+Baseline,3,10697187,Betrayal,2,2
+Baseline,4,21536272,Betrayal,0,2
+Baseline,5,702179,Redemption Ark,0,2
+Baseline,6,26989741,After Ever After,2,2
+Baseline,7,3981359,The Tristan Betrayal,2,2
+Baseline,8,5926213,The Bourne Betrayal,1,2
+Baseline,9,20192361,Krondor: The Betrayal,0,2
+Baseline,10,724729,The Redemption of Althalus,1,2
+No clicks,1,2771999,Betrayal,1,2
+No clicks,2,3979527,Redemption,1,2
+No clicks,3,10697187,Betrayal,2,2
+No clicks,4,702179,Redemption Ark,0,2
+No clicks,5,21536272,Betrayal,0,2
+No clicks,6,724729,The Redemption of Althalus,1,2
+No clicks,7,3981359,The Tristan Betrayal,2,2
+No clicks,8,5699799,After Dachau,3,2
+No clicks,9,26989741,After Ever After,2,2
+No clicks,10,5926213,The Bourne Betrayal,1,2
+After clicks,1,3979527,Redemption,1,2
+After clicks,2,10697187,Betrayal,2,2
+After clicks,3,702179,Redemption Ark,0,2
+After clicks,4,2771999,Betrayal,1,2
+After clicks,5,5699799,After Dachau,3,2
+After clicks,6,724729,The Redemption of Althalus,1,2
+After clicks,7,26989741,After Ever After,2,2
+After clicks,8,6211896,After Dark,2,2
+After clicks,9,5926213,The Bourne Betrayal,1,2
+After clicks,10,21536272,Betrayal,0,2

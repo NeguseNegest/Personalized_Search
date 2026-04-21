@@ -1,0 +1,61 @@
+System,rank,doc_id,title,Relevance,Query_ID
+Baseline,1,6986999,Hidden Warrior,0,1
+Baseline,2,12724741,The Hidden,0,1
+Baseline,3,15793998,Hidden Jewel,1,1
+Baseline,4,23553390,Hidden Empire,0,1
+Baseline,5,1191780,The Hidden Curriculum,0,1
+Baseline,6,1847613,Among the Hidden,0,1
+Baseline,7,2528114,The Hidden Past,1,1
+Baseline,8,11572980,The Hidden Assassins,1,1
+Baseline,9,33879257,The Hidden Child,3,1
+Baseline,10,2487799,The Hidden Valley of Oz,0,1
+No clicks,1,11572980,The Hidden Assassins,1,1
+No clicks,2,15793998,Hidden Jewel,1,1
+No clicks,3,6986999,Hidden Warrior,0,1
+No clicks,4,33879257,The Hidden Child,3,1
+No clicks,5,12724741,The Hidden,0,1
+No clicks,6,23553390,Hidden Empire,0,1
+No clicks,7,1191780,The Hidden Curriculum,0,1
+No clicks,8,1847613,Among the Hidden,0,1
+No clicks,9,2528114,The Hidden Past,1,1
+No clicks,10,2487799,The Hidden Valley of Oz,0,1
+After clicks,1,33879257,The Hidden Child,3,1
+After clicks,2,23425470,The Mystery of the Hidden House,3,1
+After clicks,3,11572980,The Hidden Assassins,1,1
+After clicks,4,15793998,Hidden Jewel,1,1
+After clicks,5,2528114,The Hidden Past,1,1
+After clicks,6,6986999,Hidden Warrior,0,1
+After clicks,7,12724741,The Hidden,0,1
+After clicks,8,23553390,Hidden Empire,0,1
+After clicks,9,1847613,Among the Hidden,0,1
+After clicks,10,1191780,The Hidden Curriculum,0,1
+Baseline,1,21807706,Crime,2,2
+Baseline,2,133874,Crime and Punishment,1,2
+Baseline,3,28857861,The Color of Crime,0,2
+Baseline,4,28814472,Art and Crime,0,2
+Baseline,5,10574988,The Tooth of Crime,0,2
+Baseline,6,4544321,Cult of Crime,1,2
+Baseline,7,20569005,Cross-Country Crime,2,2
+Baseline,8,4736438,The Tattooed Potato and Other Clues,2,2
+Baseline,9,14182497,Crime in the Kennel,2,2
+Baseline,10,2376385,Partners in Crime,3,2
+No clicks,1,21807706,Crime,2,2
+No clicks,2,11445284,City of Crime,2,2
+No clicks,3,20569005,Cross-Country Crime,2,2
+No clicks,4,133874,Crime and Punishment,1,2
+No clicks,5,4736438,The Tattooed Potato and Other Clues,2,2
+No clicks,6,2376385,Partners in Crime,3,2
+No clicks,7,14182497,Crime in the Kennel,2,2
+No clicks,8,4544321,Cult of Crime,1,2
+No clicks,9,28857861,The Color of Crime,0,2
+No clicks,10,28814472,Art and Crime,0,2
+After clicks,1,2376385,Partners in Crime,3,2
+After clicks,2,21807706,Crime,2,2
+After clicks,3,11445284,City of Crime,2,2
+After clicks,4,20569005,Cross-Country Crime,2,2
+After clicks,5,14182497,Crime in the Kennel,2,2
+After clicks,6,4736438,The Tattooed Potato and Other Clues,2,2
+After clicks,7,133874,Crime and Punishment,1,2
+After clicks,8,4544321,Cult of Crime,1,2
+After clicks,9,28857861,The Color of Crime,0,2
+After clicks,10,28814472,Art and Crime,0,2
