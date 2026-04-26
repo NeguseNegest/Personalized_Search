@@ -92,14 +92,15 @@ Open [http://127.0.0.1:5000](http://127.0.0.1:5000) in your browser.
 
 Enter a `User ID` in the search form to enable personalization. Searching without a User ID returns baseline BM25 results.
 
+
 ## Evaluation
 
-The `EvaluationFolder/` contains evaluation materials:
+The `EvaluationFolder/` contains pre-computed evaluation data:
 
-- **12 synthetic personas** (`Personas/*.csv`), each with explicit preferences, 3 warm-up queries and 2 test queries
-- **`eval.ipynb`** — Jupyter notebook computing P@10 and nDCG@10 across three settings (Baseline, No clicks, After clicks)
+- **12 synthetic personas** (`Personas/*.csv`) with search results and relevance labels across three settings (Baseline, No clicks, After clicks)
+- **`eval.ipynb`** — Jupyter notebook that computes P@10 and nDCG@10 from the CSV files
 
-To run the evaluation:
+To reproduce the metrics and plots:
 
 ```bash
 cd EvaluationFolder
