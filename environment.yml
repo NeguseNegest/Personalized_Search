@@ -1,0 +1,17 @@
+name: personalized-search
+channels:
+  - conda-forge
+  - pytorch
+dependencies:
+  - python=3.10
+  - pip
+  - flask
+  - numpy
+  - tqdm
+  - python-dotenv
+  - jupyterlab
+  - ipykernel
+  - pytorch
+  - pip:
+      - elasticsearch==8.15.1
+      - sentence-transformers

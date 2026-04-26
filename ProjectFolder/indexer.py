@@ -18,7 +18,7 @@ from es_mappings import (
 from embeddings_utils import encode_texts
 
 INDEX_NAME = BOOKS_INDEX
-FILE_PATH = "ProjectFolder/Corpus/booksummaries.txt"
+FILE_PATH = "Corpus/booksummaries.txt"
 
 EMBED_BATCH_SIZE = 32
 ES_BULK_CHUNK_SIZE = 200

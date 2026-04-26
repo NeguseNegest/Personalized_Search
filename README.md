@@ -26,7 +26,6 @@ ProjectFolder/
 ├── embeddings_utils.py    # Model loading (LRU-cached), encoding, vector ops
 ├── es_mappings.py         # Index settings and mappings for all 3 indices
 ├── es_client.py           # Singleton Elasticsearch connection
-├── config.py              # Environment variable loading
 ├── Website/
 │   └── index.html         # Frontend template
 ├── Corpus/
@@ -51,15 +50,17 @@ curl -fsSL https://elastic.co/start-local | sh
 
 This creates an `elastic-start-local/` directory with a `.env` file containing connection credentials.
 
-### 2. Install Python dependencies
+### 2. Initialize the enviroment
 
 ```bash
-pip install flask elasticsearch sentence-transformers python-dotenv numpy tqdm
+conda env create -f environment.yml
 ```
 
-### 3. Download the dataset
+### 3. Activate the enviroment
 
-Download the [CMU Book Summary Dataset](https://www.cs.cmu.edu/~dbamman/booksummaries.html) and place `booksummaries.txt` in `ProjectFolder/Corpus/`.
+```bash 
+conda activate personalized-search
+```
 
 ### 4. Index the documents
 
@@ -78,7 +79,7 @@ Three Elasticsearch indices are created:
 ### 5. Run the application
 
 ```bash
-flask --app app run --debug
+python app.py
 ```
 
 Open [http://127.0.0.1:5000](http://127.0.0.1:5000) in your browser.
