@@ -122,7 +122,7 @@ Non-personalized searches return this ranking directly. Personalized searches re
 Let $E(\cdot): \text{text} \rightarrow \mathbb{R}^{384}$ denote `all-MiniLM-L6-v2`. All vectors are L2-normalized. A document vector is computed from the first 500 characters of its summary:
 
 $$
-\mathbf d = E(\text{"Summary: "} \Vert \operatorname{truncate}_{500}(\text{summary})).
+\mathbf d = E(\text{"Summary: "} \Vert \mathrm{truncate}_{500}(\text{summary})).
 $$
 
 The query vector is $\mathbf q=E(q)$. Semantic features use cosine similarity, clamped at zero so that negative similarity cannot reduce a score.
@@ -132,7 +132,7 @@ The query vector is $\mathbf q=E(q)$. Semantic features use cosine similarity, c
 The explicit profile text concatenates favorite genres, authors, books, and interests:
 
 $$
-T_{\mathrm{exp}}=\operatorname{concat}(G_u,A_u,B_u,I_u),
+T_{\mathrm{exp}}=\mathrm{concat}(G_u,A_u,B_u,I_u),
 \qquad
 \mathbf u_{\mathrm{exp}}=E(T_{\mathrm{exp}}).
 $$
@@ -141,7 +141,7 @@ For the implicit profile, let $c_i$ be the number of clicks on document $d_i$. T
 
 $$
 \mathbf u_{\mathrm{click}}
-=\operatorname{normalize}\left(\sum_{i=1}^{30}c_i\mathbf d_i\right).
+=\mathrm{normalize}\left(\sum_{i=1}^{30}c_i\mathbf d_i\right).
 $$
 
 When both vectors exist, the total click count $n$ controls their contribution:
@@ -154,7 +154,7 @@ $$
 
 $$
 \mathbf u
-=\operatorname{normalize}\left(
+=\mathrm{normalize}\left(
 \alpha_{\mathrm{exp}}\mathbf u_{\mathrm{exp}}
 +\alpha_{\mathrm{click}}\mathbf u_{\mathrm{click}}
 \right).
